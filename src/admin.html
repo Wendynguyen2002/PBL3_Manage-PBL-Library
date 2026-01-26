@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUT PBL - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(180deg, #003366 0%, #f4f7f9 100%);
+            --header-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --accent-blue: #003366;
+            --admin-red: #d32f2f; /* Màu đỏ cảnh báo cho Admin */
+            --text-main: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER BAR (Giữ nguyên như Guest) --- */
+        header {
+            height: 65px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            width: 260px;
+        }
+
+        .logo-img {
+            height: 45px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-wrapper {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 45px 10px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            background: #f1f3f4;
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5f6368;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-filter {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            color: #555;
+            cursor: pointer;
+        }
+
+        /* --- LAYOUT CHÍNH --- */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* --- SIDEBAR ADMIN --- */
+        aside {
+            width: 260px;
+            border-right: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.9);
+            padding-top: 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-item i {
+            width: 24px;
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+        }
+
+        .sidebar-item:hover {
+            background: #003366;
+            color: white;
+        }
+
+        .sidebar-item:hover i {
+            color: white;
+        }
+
+        /* Badge thông báo sự cố (Màu đỏ) */
+        .alert-badge {
+            margin-left: auto;
+            background: var(--admin-red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+
+        /* --- THÂN TRANG --- */
+        main {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .admin-dashboard {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border-top: 5px solid var(--admin-red);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .admin-dashboard h2 {
+            color: var(--admin-red);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .admin-dashboard p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="image_1.jpg" alt="Logo BK" class="logo-img">
+            <span class="logo-text">DUT PBL</span>
+        </div>
+
+        <div class="header-center">
+            <div class="search-wrapper">
+                <input type="text" class="search-input" placeholder="Tìm kiếm tài liệu, người dùng, nhật ký hệ thống...">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="nav-filter">Faculty <i class="fa-solid fa-chevron-down"></i></div>
+            <div class="nav-filter">Class <i class="fa-solid fa-chevron-down"></i></div>
+            <div style="width: 35px; height: 35px; border-radius: 50%; background: #d32f2f; display: flex; align-items: center; justify-content: center;">
+                <i class="fa-solid fa-user-shield" style="color: white;"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside>
+            <nav class="sidebar-menu">
+                <a href="#" class="sidebar-item">
+                    <i class="fa-solid fa-folder-plus"></i>
+                    <span>Thêm vào thư viện</span>
+                </a>
+
+                <a href="#" class="sidebar-item">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Chỉnh sửa thư viện</span>
+                </a>
+
+                <a href="#" class="sidebar-item">
+                    <i class="fa-solid fa-gears"></i>
+                    <span>Quản lý hệ thống</span>
+                </a>
+
+                <a href="#" class="sidebar-item">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Thông báo sự cố</span>
+                    <span class="alert-badge">2</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main>
+            <div class="admin-dashboard">
+                <h2><i class="fa-solid fa-lock"></i> Hệ thống Quản trị</h2>
+                <p>Chào mừng Admin. Tại đây bạn có toàn quyền kiểm soát thư viện đồ án và cấu hình hệ thống. Hãy cẩn thận khi thực hiện các thay đổi lớn.</p>
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+                <p><strong>Trạng thái hệ thống:</strong> Đang hoạt động ổn định.</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

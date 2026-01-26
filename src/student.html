@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUT PBL - Student Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(180deg, #003366 0%, #f4f7f9 100%);
+            --header-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --accent-blue: #003366;
+            --active-green: #00c853;
+            --text-main: #333;
+            --text-muted: #999;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER BAR (Giữ nguyên như Guest) --- */
+        header {
+            height: 65px;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            width: 260px;
+        }
+
+        .logo-img {
+            height: 45px;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--accent-blue);
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-wrapper {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 45px 10px 20px;
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            background: #f1f3f4;
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #5f6368;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-filter {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            color: #555;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* --- LAYOUT CHÍNH --- */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* --- SIDEBAR SINH VIÊN --- */
+        aside {
+            width: 260px;
+            border-right: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.7);
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent-blue);
+        }
+
+        .sidebar-item:hover {
+            background: rgba(0, 51, 102, 0.05);
+            color: var(--accent-blue);
+        }
+
+        /* Trạng thái lớp bị mờ (Chưa tham gia) */
+        .sidebar-item.disabled {
+            opacity: 0.5;
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .sidebar-item.disabled i {
+            color: var(--text-muted);
+        }
+
+        .sidebar-item.disabled:hover {
+            background: transparent;
+        }
+
+        /* Nhãn thông báo (Badge) */
+        .badge {
+            margin-left: auto;
+            background: #ff4d4d;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        /* --- THÂN TRANG --- */
+        main {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-blue);
+        }
+
+        .welcome-section h2 {
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <img src="image_1.jpg" alt="Logo BK" class="logo-img">
+            <span class="logo-text">DUT PBL</span>
+        </div>
+
+        <div class="header-center">
+            <div class="search-wrapper">
+                <input type="text" class="search-input" placeholder="Tìm kiếm học phần, đề tài...">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="nav-filter">Faculty <i class="fa-solid fa-chevron-down"></i></div>
+            <div class="nav-filter">Class <i class="fa-solid fa-chevron-down"></i></div>
+            <div style="width: 35px; height: 35px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                <i class="fa-solid fa-user" style="color: #666;"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <aside>
+            <nav class="sidebar-menu">
+                <a href="#" class="sidebar-item">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Tham gia lớp PBL</span>
+                </a>
+
+                <a href="#" class="sidebar-item">
+                    <i class="fa-solid fa-bell"></i>
+                    <span>Thông báo tiến độ</span>
+                    <span class="badge">3</span>
+                </a>
+
+                <a href="#" class="sidebar-item">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Nộp PBL</span>
+                </a>
+
+                <div class="sidebar-item disabled" title="Bạn chưa tham gia lớp nào">
+                    <i class="fa-solid fa-users-rectangle"></i>
+                    <span>Lớp của bạn</span>
+                </div>
+            </nav>
+        </aside>
+
+        <main>
+            <div class="welcome-section">
+                <h2>Chào mừng bạn quay trở lại!</h2>
+                <p>Hãy tham gia một lớp học PBL để bắt đầu quản lý tiến độ và nộp đồ án của mình.</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
