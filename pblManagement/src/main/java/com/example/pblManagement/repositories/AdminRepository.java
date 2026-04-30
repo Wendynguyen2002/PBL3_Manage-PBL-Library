@@ -22,4 +22,6 @@ public interface AdminRepository extends JpaRepository<Admin, String> {
            LOWER(a.email) LIKE LOWER(CONCAT('%', :search, '%')))
     """)
     Page<Admin> searchAdmins(@Param("search") String search, Pageable pageable);
+
+    Admin findByEmail(String email);
 }

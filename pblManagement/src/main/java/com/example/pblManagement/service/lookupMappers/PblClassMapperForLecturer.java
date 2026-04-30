@@ -12,30 +12,6 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class PblClassMapperForLecturer {
-    private final PblClassRepository pblClassRepository;
-
-//    @Named("mapPblClasses")
-//    public List<PblClass> toEntities(List<String> pblClassIds) {
-//        if (pblClassIds == null) return null;
-//        if (pblClassIds.isEmpty()) return Collections.emptyList();
-//
-//        List<PblClass> foundClasses = pblClassRepository.findAllById(pblClassIds);
-//
-//        if (foundClasses.size() != pblClassIds.size()) {
-//            List<String> foundIds = foundClasses.stream()
-//                    .map(PblClass::getId)
-//                    .toList();
-//
-//            List<String> missingIds = pblClassIds.stream()
-//                    .filter(id -> !foundIds.contains(id))
-//                    .toList();
-//
-//            throw new EntityNotFoundException("PBL Classes not found with IDs: " + missingIds);
-//        }
-//
-//        return foundClasses;
-//    }
-
     @Named("mapPblClassIds")
     public List<String> toIds(List<PblClass> pblClasses) {
         if (pblClasses == null) return null;

@@ -1,6 +1,5 @@
 package com.example.pblManagement.model.entities;
 
-import com.example.pblManagement.model.entities.enums.MembershipRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,18 +28,4 @@ public class GroupMembership {
     @JoinColumn(name = "pbl_group_id", nullable = false)
     private PblGroup pblGroup;
 
-    @Column(nullable = false, updatable = false)
-    private Instant joinedAt;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private MembershipRole role; // LEADER, MEMBER
-
-    @PrePersist
-    protected void onCreate() {
-        this.joinedAt = Instant.now();
-        if (this.role == null) {
-            this.role = MembershipRole.MEMBER;
-        }
-    }
 }

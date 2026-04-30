@@ -5,10 +5,10 @@ import com.example.pblManagement.model.dto.user.StudentResponseDTO;
 import com.example.pblManagement.model.dto.user.StudentSelfUpdateRequestDTO;
 import com.example.pblManagement.model.dto.user.StudentSummaryDTO;
 import com.example.pblManagement.model.entities.Student;
-import com.example.pblManagement.service.lookupMappers.MajorMapperForStudent;
+import com.example.pblManagement.service.lookupMappers.LookupMajorMapper;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", uses = {MajorMapperForStudent.class})
+@Mapper(componentModel = "spring", uses = {LookupMajorMapper.class})
 public interface StudentMapper {
     @Mapping(target = "major", source = "majorId", qualifiedByName = "mapMajor")
     Student toEntity(StudentRequestDTO dto);

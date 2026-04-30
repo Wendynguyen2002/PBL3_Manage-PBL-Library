@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
-public class StudentController {
+public class   StudentController {
     private final StudentService studentService;
 
     // Admin only: Create new student
@@ -57,7 +57,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateOwnProfile(dto));
     }
 
-    // student self change password
+    // Student self change password
     @PutMapping("/profile/change-password")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody PasswordChangeDTO passwordChangeDTO) {
@@ -65,7 +65,7 @@ public class StudentController {
         return ResponseEntity.ok().build();
     }
 
-    // student view own profile
+    // Student view own profile
     @GetMapping("/profile")
     @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<StudentResponseDTO> getOwnProfile() {
@@ -79,7 +79,7 @@ public class StudentController {
             @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "department.departmentName") String sortBy,
+            @RequestParam(defaultValue = "department.name") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
 
         Pageable pageable = PageRequest.of(page, size,

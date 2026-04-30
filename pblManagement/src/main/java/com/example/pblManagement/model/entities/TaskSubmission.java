@@ -1,6 +1,5 @@
 package com.example.pblManagement.model.entities;
 
-import com.example.pblManagement.model.entities.enums.LinkType;
 import com.example.pblManagement.model.entities.enums.TaskSubmissionStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,12 +39,12 @@ public class TaskSubmission {
     private TaskSubmissionStatus status;
 
     // Relationship to task
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
     private ProgressTask task;
 
     // Which group submitted
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
     private PblGroup group;
 
@@ -54,12 +53,12 @@ public class TaskSubmission {
     private List<SubmissionLink> links = new ArrayList<>();
 
     // Who submitted (the group leader or any member)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "submitted_by", nullable = false)
     private Student submittedBy;
 
     // Optional: Last modified by
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "last_modified_by")
     private Student lastModifiedBy;
 
@@ -77,18 +76,5 @@ public class TaskSubmission {
     @PreUpdate
     protected void onUpdate() {
         this.lastModifiedAt = LocalDateTime.now();
-    }
-
-    // Helper: Add a link
-    public void addLink(String url, LinkType type) {
-        if (links == null) {
-            links = new ArrayList<>();
-        }
-        SubmissionLink link = SubmissionLink.builder()
-                .url(url)
-                .linkType(type)
-                .submission(this)
-                .build();
-        links.add(link);
     }
 }

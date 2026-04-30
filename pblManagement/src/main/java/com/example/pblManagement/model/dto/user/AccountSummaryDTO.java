@@ -1,7 +1,5 @@
 package com.example.pblManagement.model.dto.user;
 
-import com.example.pblManagement.model.entities.enums.UserRole;
-import com.example.pblManagement.model.entities.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

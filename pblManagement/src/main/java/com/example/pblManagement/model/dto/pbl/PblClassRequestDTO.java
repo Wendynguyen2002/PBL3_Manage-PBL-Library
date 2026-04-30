@@ -11,7 +11,7 @@ import lombok.*;
 public class PblClassRequestDTO {
     @NotBlank(message = "Class ID is required")
     @Pattern(regexp = "^[0-9]{2}[A-Za-z]{2}[0-9]{2}$",
-            message = "Class ID must follow format: 24Nh11 (2 digits + 2 letters + 2 digits)")
+            message = "Class ID must follow format: 67Nh67 (2 digits + 2 letters + 2 digits)")
     private String id;
 
     @NotBlank(message = "Class name is required")
@@ -33,6 +33,6 @@ public class PblClassRequestDTO {
     private Integer minStudentsPerGroup;
 
     @NotNull(message = "Lecturer ID is required")
-    @Positive(message = "Lecturer ID must be positive")
-    private Long lecturerId;
+    private String lecturerId;
+
 }

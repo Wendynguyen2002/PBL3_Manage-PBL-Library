@@ -42,6 +42,8 @@ public class StudentServiceImpl implements StudentService {
 
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             student.setPassword(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            student.setPassword(passwordEncoder.encode(dto.getId())); // Default password is the student's ID
         }
 
         return studentMapper.toResponseDTO(studentRepository.save(student));
@@ -73,7 +75,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public StudentResponseDTO updateStudent(String id, StudentRequestDTO dto) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("student not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
         // Check email uniqueness if changed
         if (!student.getEmail().equals(dto.getEmail()) && studentRepository.existsByEmail(dto.getEmail())) {
@@ -122,7 +124,7 @@ public class StudentServiceImpl implements StudentService {
     public void changePassword(PasswordChangeDTO dto) {
         String currentStudentId = securityUtils.getCurrentUserId();
         Student student = studentRepository.findById(currentStudentId)
-                .orElseThrow(() -> new EntityNotFoundException("student not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
         // Verify current password
         if (!passwordEncoder.matches(dto.getCurrentPassword(), student.getPassword())) {

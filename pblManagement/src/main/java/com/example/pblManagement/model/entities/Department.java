@@ -15,11 +15,11 @@ import java.util.List;
 @Builder
 public class Department {
     @Id
-    @Column(length = 20)
-    private String departmentId;
+    @Column(nullable = false, length = 20)
+    private String id;
 
     @Column(nullable = false, length = 100)
-    private String departmentName;
+    private String name;
 
     // One department has many majors
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)

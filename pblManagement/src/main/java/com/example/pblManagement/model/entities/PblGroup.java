@@ -1,5 +1,4 @@
 package com.example.pblManagement.model.entities;
-import com.example.pblManagement.model.entities.enums.MembershipRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,60 +30,17 @@ public class PblGroup {
     @JoinColumn(name = "project_id", unique = true)
     private Project project;
 
-
+    // 1 group has many memberships
     @OneToMany(mappedBy = "pblGroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupMembership> memberships = new ArrayList<>();
 
-    // Helper to get actual students
-    public List<Student> getStudents() {
-        return memberships.stream()
-                .map(GroupMembership::getStudent)
-                .collect(Collectors.toList());
-    }
-
-    // Helper to count current members
     public int getCurrentMemberCount() {
-        return memberships.size();
+        return memberships != null ? memberships.size() : 0;
     }
 
-    // Helper to check if group is full (vs class max)
     public boolean isFull() {
-        return getCurrentMemberCount() >= pblClass.getMaxStudentsPerGroup();
-    }
-
-    // Helper to check if group meets minimum requirement
-    public boolean meetsMinimum() {
-        return getCurrentMemberCount() >= pblClass.getMinStudentsPerGroup();
-    }
-
-    // Add student with role
-    public GroupMembership addStudent(Student student, MembershipRole role) {
-        if (isFull()) {
-            throw new IllegalStateException("Group is full");
-        }
-        // Check if student already in this class
-        if (student.getGroupForClass(this.pblClass).isPresent()) {
-            throw new IllegalStateException("Student already in a group for this class");
-        }
-
-        GroupMembership membership = GroupMembership.builder()
-                .student(student)
-                .pblGroup(this)
-                .role(role)
-                .build();
-        memberships.add(membership);
-        student.getGroupMemberships().add(membership);
-        return membership;
-    }
-
-    // Remove student from group (lecturer only)
-    public void removeStudent(Student student) {
-        GroupMembership membership = memberships.stream()
-                .filter(m -> m.getStudent().equals(student))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Student not in this group"));
-
-        memberships.remove(membership);
-        student.getGroupMemberships().remove(membership);
+        if (pblClass == null) return true;
+        Integer max = pblClass.getMaxStudentsPerGroup();
+        return max != null && getCurrentMemberCount() >= max;
     }
 }

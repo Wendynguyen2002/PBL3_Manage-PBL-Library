@@ -9,13 +9,21 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DepartmentMapperForLecturer {
+public class LookupDepartmentMapper {
     private final DepartmentRepository departmentRepository;
 
+    // On creating a lecturer, assign a department
     @Named("mapDepartment")
     public Department mapDepartment(String departmentId) {
         if (departmentId == null) return null;
         return departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Department not found: " + departmentId));
+    }
+
+    // Only extract the department name
+    @Named("mapDepartmentName")
+    public String mapDepartmentName(Department department) {
+        if (department == null) return null;
+        return department.getName();
     }
 }

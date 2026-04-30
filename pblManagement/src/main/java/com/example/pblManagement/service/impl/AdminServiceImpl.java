@@ -35,6 +35,8 @@ public class AdminServiceImpl implements AdminService {
 
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             admin.setPassword(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            admin.setPassword(passwordEncoder.encode(admin.getId())); // Default password is the admin's ID
         }
 
         return adminMapper.toResponseDTO(adminRepository.save(admin));

@@ -25,8 +25,6 @@ public class PblClass {
     @Column(nullable = false)
     private Integer maxStudentsPerGroup; // Maximum number of students allowed in a group
 
-    private Integer minStudentsPerGroup; // Minimum number of students required to form a group
-
     // Many PBL classes can be taught by 1 lecturer
     @ManyToOne
     @JoinColumn(name = "lecturer_id")
@@ -42,15 +40,20 @@ public class PblClass {
 
     // 1 class may have many tasks.
     @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL)
-    @OrderBy("taskOrder ASC, dueDate ASC")
+    @OrderBy("dueDate ASC")
     private List<ProgressTask> progressTasks = new ArrayList<>();
 
     // 1 class with 1 universal final report template
     @OneToOne(mappedBy = "pblClass", cascade = CascadeType.ALL)
     private FinalReportTemplate finalReportTemplate;
 
-    // Helper to validate group size constraints
-    public boolean isValidGroupSize(int size) {
-        return size >= minStudentsPerGroup && size <= maxStudentsPerGroup;
-    }
+    // Students enrolled in this class (whether grouped or not)
+    @ManyToMany
+    @JoinTable(
+            name = "class_enrollments",
+            joinColumns = @JoinColumn(name = "pbl_class_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
+    private List<Student> enrolledStudents = new ArrayList<>();
+
 }

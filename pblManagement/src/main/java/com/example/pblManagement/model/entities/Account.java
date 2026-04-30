@@ -2,12 +2,10 @@ package com.example.pblManagement.model.entities;
 
 import com.example.pblManagement.model.entities.enums.Gender;
 import com.example.pblManagement.model.entities.enums.UserRole;
-import com.example.pblManagement.model.entities.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -46,20 +44,5 @@ public abstract class Account {
     @Column(length = 15, unique = true)
     private String phoneNumber;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private UserStatus status; // ACTIVATED, DEACTIVATED
-
-    @Column(nullable = false, updatable = false)
-    private Instant createdAt;
-
     private String homeTown;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = Instant.now();
-        if (this.status == null) {
-            this.status = UserStatus.ACTIVATED;
-        }
-    }
 }

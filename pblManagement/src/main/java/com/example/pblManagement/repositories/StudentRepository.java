@@ -23,4 +23,7 @@ public interface StudentRepository extends JpaRepository<Student, String> {
            LOWER(s.major.name) LIKE LOWER(CONCAT('%', :search, '%')))
 """)
     Page<Student> searchStudents(@Param("search") String search, Pageable pageable);
+
+    Student findByEmail(String email);
+
 }

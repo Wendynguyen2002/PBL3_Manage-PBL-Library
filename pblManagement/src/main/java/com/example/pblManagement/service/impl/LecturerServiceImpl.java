@@ -42,6 +42,8 @@ public class LecturerServiceImpl implements LecturerService {
 
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             lecturer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        } else {
+            lecturer.setPassword(passwordEncoder.encode(dto.getId())); // Default password is the lecturer's ID
         }
 
         return lecturerMapper.toResponseDTO(lecturerRepository.save(lecturer));

@@ -2,7 +2,6 @@ package com.example.pblManagement.model.dto.user;
 
 import com.example.pblManagement.model.entities.enums.Gender;
 import com.example.pblManagement.model.entities.enums.UserRole;
-import com.example.pblManagement.model.entities.enums.UserStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,10 +31,6 @@ public abstract class AccountResponseDTO {
     private UserRole role;
 
     private String phoneNumber;
-
-    private UserStatus status;
-
-    private Instant createdAt;
 
     private String homeTown;
 }

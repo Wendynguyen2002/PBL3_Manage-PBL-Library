@@ -33,9 +33,6 @@ public class ProgressTask {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    // Order/sequence of tasks within a class
-    private Integer taskOrder;
-
     // Many tasks belong to one PBL class
     @ManyToOne
     @JoinColumn(name = "pbl_class_id", nullable = false)
@@ -53,18 +50,5 @@ public class ProgressTask {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-    }
-
-    // Helper: Check if a group has submitted
-    public boolean hasGroupSubmitted(PblGroup group) {
-        return submissions != null && submissions.stream()
-                .anyMatch(sub -> sub.getGroup().equals(group));
-    }
-
-    // Helper: Get submission for a specific group
-    public Optional<TaskSubmission> getSubmissionForGroup(PblGroup group) {
-        return submissions != null ? submissions.stream()
-                                     .filter(sub -> sub.getGroup().equals(group))
-                                     .findFirst() : Optional.empty();
     }
 }

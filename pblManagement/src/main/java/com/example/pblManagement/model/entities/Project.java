@@ -33,16 +33,5 @@ public class Project {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private ProjectStatus status;
-
-    public boolean isAssigned() {
-        return this.assignedGroup != null;
-    }
-
-    // Sync status when group assigned
-    public void assignGroup(PblGroup group) {
-        this.assignedGroup = group;
-        this.status = ProjectStatus.TAKEN;
-        group.setProject(this);
-    }
+    private ProjectStatus status; // AVAILABLE, TAKEN
 }

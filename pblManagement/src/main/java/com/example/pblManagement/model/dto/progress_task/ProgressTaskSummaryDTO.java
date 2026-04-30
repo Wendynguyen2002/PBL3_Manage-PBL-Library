@@ -1,4 +1,11 @@
-package com.example.pblManagement.model.dto.progress_task;
-
-public class ProgressTaskSummaryDTO {
-}
+//package com.example.pblManagement.model.dto.progress_task;
+//
+//import lombok.*;
+//
+//@Getter
+//@Setter
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Builder
+//public class ProgressTaskSummaryDTO {
+//}

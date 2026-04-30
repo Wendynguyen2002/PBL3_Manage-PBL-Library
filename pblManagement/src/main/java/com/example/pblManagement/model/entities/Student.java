@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "students")
@@ -28,19 +26,8 @@ public class Student extends Account{
 
     // One student might be able to be in many groups across many PBL classes
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<GroupMembership> groupMemberships = new HashSet<>();
+    private List<GroupMembership> groupMemberships = new ArrayList<>();
 
-    // Helper to get current group for a specific class
-    public Optional<PblGroup> getGroupForClass(PblClass pblClass) {
-        return groupMemberships.stream()
-                .map(GroupMembership::getPblGroup)
-                .filter(group -> group.getPblClass().equals(pblClass))
-                .findFirst();
-    }
-
-    // Helper to check if student is in a group for a class
-    public boolean isInGroupForClass(PblClass pblClass) {
-        return getGroupForClass(pblClass).isPresent();
-    }
-
+    @ManyToMany(mappedBy = "enrolledStudents")
+    private List<PblClass> enrolledClasses = new ArrayList<>();
 }
