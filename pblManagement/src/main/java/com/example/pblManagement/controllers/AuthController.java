@@ -3,12 +3,15 @@ package com.example.pblManagement.controllers;
 import com.example.pblManagement.model.dto.common.LoginRequestDTO;
 import com.example.pblManagement.model.dto.common.LoginResponseDTO;
 import com.example.pblManagement.utils.SecurityUtils;
+import com.example.pblManagement.utils.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,22 +29,28 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO request) {
-        // Authenticate using ID and password
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getId(),  // Using ID as username
-                        request.getPassword()
-                )
-        );
+        try {
+            // Authenticate using ID and password
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),  // Using email for auth
+                            request.getPassword()
+                    )
+            );
 
-        // Set authentication in security context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            // Set authentication in security context
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // Get user details
-        String userId = securityUtils.getCurrentUserId();
-        String role = authentication.getAuthorities().iterator().next().getAuthority();
+            // Get user details
+            UserDetailsImpl userDetails = securityUtils.getCurrentUserDetails();
+            String userId = userDetails.getId();
+            String role = userDetails.getRole().name(); // Get enum name: "ADMIN", "LECTURER", "STUDENT"
+            String email = userDetails.getEmail();
 
-        return ResponseEntity.ok().body(new LoginResponseDTO(userId, role, "Login successful"));
+            return ResponseEntity.ok().body(new LoginResponseDTO(userId, email, role, "Login successful"));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid email or password"));
+        }
     }
 
     @PostMapping("/logout")
@@ -55,7 +64,12 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser() {
-        String userId = securityUtils.getCurrentUserId();
-        return ResponseEntity.ok().body(Map.of("userId", userId));
+        UserDetailsImpl userDetails = securityUtils.getCurrentUserDetails();
+        return ResponseEntity.ok().body(Map.of(
+                "userId", userDetails.getId(),
+                "email", userDetails.getEmail(),
+                "role", userDetails.getRole().name(),
+                "fullName", userDetails.getFullName()
+        ));
     }
 }

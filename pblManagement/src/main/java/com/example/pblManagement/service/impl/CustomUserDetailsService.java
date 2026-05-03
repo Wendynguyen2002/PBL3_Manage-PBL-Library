@@ -3,19 +3,17 @@ package com.example.pblManagement.service.impl;
 import com.example.pblManagement.model.entities.Admin;
 import com.example.pblManagement.model.entities.Lecturer;
 import com.example.pblManagement.model.entities.Student;
+import com.example.pblManagement.model.entities.enums.UserRole;
 import com.example.pblManagement.repositories.AdminRepository;
 import com.example.pblManagement.repositories.LecturerRepository;
 import com.example.pblManagement.repositories.StudentRepository;
 import com.example.pblManagement.utils.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,41 +23,41 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final StudentRepository studentRepository;
 
     @Override
-    public @NonNull UserDetails loadUserByUsername(@NonNull String id) throws UsernameNotFoundException {
+    public @NonNull UserDetails loadUserByUsername(@NonNull String email) throws UsernameNotFoundException {
         // Try to find user in Admin, Lecturer, Student tables
-        Admin admin = adminRepository.findById(id).orElse(null);
+        Admin admin = adminRepository.findByEmail(email).orElse(null);
         if (admin != null) {
             return new UserDetailsImpl(
                     admin.getId(),
                     admin.getEmail(),
                     admin.getFullName(),
                     admin.getPassword(),
-                    List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                    UserRole.ADMIN
             );
         }
 
-        Lecturer lecturer = lecturerRepository.findById(id).orElse(null);
+        Lecturer lecturer = lecturerRepository.findByEmail(email).orElse(null);
         if (lecturer != null) {
             return new UserDetailsImpl(
                     lecturer.getId(),
                     lecturer.getEmail(),
                     lecturer.getFullName(),
                     lecturer.getPassword(),
-                    List.of(new SimpleGrantedAuthority("ROLE_LECTURER"))
+                    UserRole.LECTURER
             );
         }
 
-        Student student = studentRepository.findById(id).orElse(null);
+        Student student = studentRepository.findByEmail(email).orElse(null);
         if (student != null) {
             return new UserDetailsImpl(
                     student.getId(),
                     student.getEmail(),
                     student.getFullName(),
                     student.getPassword(),
-                    List.of(new SimpleGrantedAuthority("ROLE_STUDENT"))
+                    UserRole.STUDENT
             );
         }
 
-        throw new UsernameNotFoundException("User not found with Id: " + id);
+        throw new UsernameNotFoundException("User not found with email: " + email);
     }
 }

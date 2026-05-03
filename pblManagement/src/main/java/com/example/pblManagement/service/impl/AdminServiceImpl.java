@@ -3,6 +3,7 @@ import com.example.pblManagement.mappers.AdminMapper;
 import com.example.pblManagement.model.dto.common.PasswordChangeDTO;
 import com.example.pblManagement.model.dto.user.*;
 import com.example.pblManagement.model.entities.Admin;
+import com.example.pblManagement.model.entities.enums.UserRole;
 import com.example.pblManagement.repositories.AdminRepository;
 import com.example.pblManagement.service.AdminService;
 import com.example.pblManagement.utils.SecurityUtils;
@@ -32,6 +33,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         Admin admin = adminMapper.toEntity(dto);
+        admin.setRole(UserRole.ADMIN);
 
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             admin.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -111,7 +113,7 @@ public class AdminServiceImpl implements AdminService {
         adminRepository.save(admin);
     }
 
-    // admin: Get own profile
+    // Admin: Get own profile
     @Override
     public AdminResponseDTO getOwnProfile() {
         String currentUserId = securityUtils.getCurrentUserId();

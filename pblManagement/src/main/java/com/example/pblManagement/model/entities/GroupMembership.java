@@ -3,8 +3,6 @@ package com.example.pblManagement.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
-
 @Entity
 @Table(name = "group_memberships",
         uniqueConstraints = @UniqueConstraint(columnNames = {"student_id", "pbl_group_id"}))
@@ -13,7 +11,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// Junction table, sits between PblGroup and Students to solve many-to-many relationship
+// Junction table, sits between PblGroup and Students
 public class GroupMembership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

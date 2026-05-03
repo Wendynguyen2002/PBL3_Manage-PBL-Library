@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface StudentRepository extends JpaRepository<Student, String> {
     boolean existsByEmail(@NotBlank(message = "Email is required") @Email(message = "Invalid email format") @Size(max = 100, message = "Email cannot exceed 100 characters") String email);
@@ -24,6 +26,6 @@ public interface StudentRepository extends JpaRepository<Student, String> {
 """)
     Page<Student> searchStudents(@Param("search") String search, Pageable pageable);
 
-    Student findByEmail(String email);
+    Optional<Student> findByEmail(String email);
 
 }

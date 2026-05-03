@@ -4,97 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1074abcc-0236-4945-8cbb-38cbeb6c6f41" name="Changes" comment="Sieuphandong">
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/config/CurrentUserArgumentResolver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/config/WebConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/DepartmentController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/MajorController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/DepartmentMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/MajorMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/common/LoginRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/common/LoginResponseDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/others/DepartmentRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/others/DepartmentResponseDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/others/DepartmentSummaryDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/others/MajorRequestDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/others/MajorSummaryDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/project/AvailableProjectsDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/security/CurrentUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/CurrentUserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/DepartmentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/MajorService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/CurrentUserServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/CustomUserDetailsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/DepartmentServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/MajorServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/lookupMappers/LookupLecturerMapper.java" afterDir="false" />
+    <list default="true" id="1074abcc-0236-4945-8cbb-38cbeb6c6f41" name="Changes" comment="Fixed minor bugs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/config/CORSConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/PblClassController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/PblClassController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/ProgressTaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/ProgressTaskController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/ProjectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/StudentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/StudentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/LecturerMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/LecturerMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/PblClassMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/PblClassMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/PblGroupMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/PblGroupMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/ProjectMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/ProjectMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/StudentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/StudentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/finalreport/submission/FinalReportSubmissionDetailResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/finalreport/submission/FinalReportSubmissionRequestDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/finalreport/submission/FinalReportSubmissionResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/finalreport/template/FinalReportFieldRequestDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/finalreport/template/FinalReportFieldResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/finalreport/template/FinalReportTemplateResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/finalreport/template/FinalReportTemplateStatusRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/PblManagementApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/PblManagementApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/DepartmentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/DepartmentController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/MajorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/controllers/MajorController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/DepartmentMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/mappers/DepartmentMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/common/LoginRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/common/LoginRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/common/LoginResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/common/LoginResponseDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/pbl/PblClassRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/pbl/PblClassRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/pbl/PblClassResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/pbl/PblClassResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/pbl/PblGroupRequestDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/pbl/PblGroupResponseDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/pbl/PblGroupSummaryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/pbl/PblGroupSummaryDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/progress_task/ProgressTaskRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/progress_task/ProgressTaskRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/progress_task/ProgressTaskResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/progress_task/ProgressTaskResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/progress_task/ProgressTaskSummaryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/progress_task/ProgressTaskSummaryDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/project/ProjectRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/project/ProjectRequestDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/project/ProjectResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/project/ProjectResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/project/ProjectSummaryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/project/ProjectSummaryDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/user/AccountResponseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/user/AccountResponseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/user/AccountSummaryDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/user/AccountSummaryDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/Account.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/Department.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/Department.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/user/LecturerSelfUpdateRequestDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/dto/user/LecturerSelfUpdateRequestDTO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/GroupMembership.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/GroupMembership.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/PblClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/PblClass.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/PblGroup.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/PblGroup.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/ProgressTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/ProgressTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/Project.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/Student.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/Student.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/TaskSubmission.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/TaskSubmission.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/enums/MembershipRole.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/enums/ProjectStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/enums/ProjectStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/enums/UserStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/model/entities/enums/StudentGroupStatus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/AdminRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/AdminRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/DepartmentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/DepartmentRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/LecturerRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/LecturerRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/MajorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/MajorRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/PblClassRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/PblClassRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/ProjectRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/ProjectRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/StudentRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/repositories/StudentRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/LecturerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/LecturerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/PblClassService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/PblClassService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/ProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/StudentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/StudentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/DepartmentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/DepartmentService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/AdminServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/AdminServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/CurrentUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/CurrentUserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/CustomUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/CustomUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/DepartmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/DepartmentServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/LecturerServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/LecturerServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/PblClassServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/PblClassServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/ProjectServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/ProjectServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/StudentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/impl/StudentServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/lookupMappers/DepartmentMapperForLecturer.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/lookupMappers/LookupDepartmentMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/lookupMappers/MajorMapperForStudent.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/lookupMappers/LookupMajorMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/lookupMappers/PblClassMapperForLecturer.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/service/lookupMappers/PblClassMapperForLecturer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/utils/SecurityUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/utils/SecurityUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/utils/UserDetails.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/utils/UserDetailsImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/pblManagement/src/main/java/com/example/pblManagement/utils/UserDetailsImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -144,6 +78,9 @@
     <commands />
     <urls />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7,
   &quot;fromUser&quot;: false
@@ -153,33 +90,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/buianhtu/Desktop/repos/PBL3_Manage-PBL-Library&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.PblManagementApplication.executor": "Run",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/buianhtu/Desktop/repos/PBL3_Manage-PBL-Library",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="PBL3_Manage-PBL-Library" />
@@ -218,7 +160,12 @@
       <workItem from="1777362256090" duration="7131000" />
       <workItem from="1777381053815" duration="2795000" />
       <workItem from="1777431753143" duration="21263000" />
-      <workItem from="1777532145681" duration="8267000" />
+      <workItem from="1777532145681" duration="12471000" />
+      <workItem from="1777604589909" duration="357000" />
+      <workItem from="1777607916879" duration="10671000" />
+      <workItem from="1777702779205" duration="1700000" />
+      <workItem from="1777717123991" duration="4263000" />
+      <workItem from="1777770257388" duration="3906000" />
     </task>
     <task id="LOCAL-00001" summary="Sieuphandong">
       <option name="closed" value="true" />
@@ -236,7 +183,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777045959289</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Added login auth; endpoints for many entities. Still stuck at PBL Class - Group">
+      <option name="closed" value="true" />
+      <created>1777562574219</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1777562574219</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,7 +213,9 @@
       <path value="$PROJECT_DIR$/pblManagement" />
     </ignored-roots>
     <MESSAGE value="Sieuphandong" />
-    <option name="LAST_COMMIT_MESSAGE" value="Sieuphandong" />
+    <MESSAGE value="Added login auth; endpoints for many entities. Still stuck at PBL Class - Group" />
+    <MESSAGE value="Fixed minor bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed minor bugs" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

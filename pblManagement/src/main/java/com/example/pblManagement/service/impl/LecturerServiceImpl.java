@@ -3,6 +3,7 @@ import com.example.pblManagement.mappers.LecturerMapper;
 import com.example.pblManagement.model.dto.common.PasswordChangeDTO;
 import com.example.pblManagement.model.dto.user.*;
 import com.example.pblManagement.model.entities.Lecturer;
+import com.example.pblManagement.model.entities.enums.UserRole;
 import com.example.pblManagement.repositories.DepartmentRepository;
 import com.example.pblManagement.repositories.LecturerRepository;
 import com.example.pblManagement.service.LecturerService;
@@ -28,6 +29,8 @@ public class LecturerServiceImpl implements LecturerService {
     // Admin: Create new lecturer
     @Override
     public LecturerResponseDTO createLecturer(LecturerRequestDTO dto) {
+        securityUtils.verifyAdmin();
+
         // Check if mail already exists
         if (lecturerRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
@@ -39,6 +42,7 @@ public class LecturerServiceImpl implements LecturerService {
         }
 
         Lecturer lecturer = lecturerMapper.toEntity(dto);
+        lecturer.setRole(UserRole.LECTURER);
 
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             lecturer.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -74,6 +78,8 @@ public class LecturerServiceImpl implements LecturerService {
     // Admin: Update lecturer
     @Override
     public LecturerResponseDTO updateLecturer(String id, LecturerRequestDTO dto) {
+        securityUtils.verifyAdmin();
+
         Lecturer lecturer = lecturerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
 
@@ -100,6 +106,8 @@ public class LecturerServiceImpl implements LecturerService {
     // Admin: Delete lecturer
     @Override
     public void deleteLecturer(String id) {
+        securityUtils.verifyAdmin();
+
         if (!lecturerRepository.existsById(id)) {
             throw new EntityNotFoundException("Lecturer not found with id: " + id);
         }
@@ -109,6 +117,8 @@ public class LecturerServiceImpl implements LecturerService {
     // Lecturer: Update own profile
     @Override
     public LecturerResponseDTO updateOwnProfile(LecturerSelfUpdateRequestDTO dto) {
+        securityUtils.verifyLecturer();
+
         String currentLecturerId = securityUtils.getCurrentUserId();
         Lecturer lecturer = lecturerRepository.findById(currentLecturerId)
                 .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
@@ -122,6 +132,8 @@ public class LecturerServiceImpl implements LecturerService {
     // Separate endpoint for password change
     @Override
     public void changePassword(PasswordChangeDTO dto) {
+        securityUtils.verifyLecturer();
+
         String currentLecturerId = securityUtils.getCurrentUserId();
         Lecturer lecturer = lecturerRepository.findById(currentLecturerId)
                 .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
@@ -139,6 +151,8 @@ public class LecturerServiceImpl implements LecturerService {
     // Lecturer: Get own profile
     @Override
     public LecturerResponseDTO getOwnProfile() {
+        securityUtils.verifyLecturer();
+
         String currentUserId = securityUtils.getCurrentUserId();
         Lecturer lecturer = lecturerRepository.findById(currentUserId)
                 .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));

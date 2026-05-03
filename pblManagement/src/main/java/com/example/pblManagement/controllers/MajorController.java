@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class MajorController {
     private final MajorService majorService;
 
+    // Admin: Create a major
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MajorSummaryDTO> createMajor(@Valid @RequestBody MajorRequestDTO dto) {
@@ -27,11 +28,13 @@ public class MajorController {
         return new ResponseEntity<>(createdMajor, HttpStatus.CREATED);
     }
 
+    // Get details of a major
     @GetMapping("/{id}")
     public ResponseEntity<MajorSummaryDTO> getMajorById(@PathVariable String id) {
         return ResponseEntity.ok(majorService.getMajorById(id));
     }
 
+    // Get all majors with search and pagination
     @GetMapping
     public ResponseEntity<Page<MajorSummaryDTO>> getAllMajors(
             @RequestParam(defaultValue = "") String search,
@@ -46,6 +49,7 @@ public class MajorController {
         return ResponseEntity.ok(majorService.getAllMajors(search, pageable));
     }
 
+    // Admin: Update a major
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MajorSummaryDTO> updateMajor(
@@ -54,6 +58,7 @@ public class MajorController {
         return ResponseEntity.ok(majorService.updateMajor(id, dto));
     }
 
+    // Admin: Delete a major
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteMajor(@PathVariable String id) {

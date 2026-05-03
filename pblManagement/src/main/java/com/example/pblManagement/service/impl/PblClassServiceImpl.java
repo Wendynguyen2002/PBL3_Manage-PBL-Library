@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,11 +48,6 @@ public class PblClassServiceImpl implements PblClassService {
         // Check if lecturer exists
         if (!lecturerRepository.existsById(dto.getLecturerId())) {
             throw new IllegalArgumentException("Lecturer not found");
-        }
-
-        // Validate group size constraints
-        if (dto.getMinStudentsPerGroup() > dto.getMaxStudentsPerGroup()) {
-            throw new ValidationException("Minimum students per group cannot be greater than maximum");
         }
 
         PblClass pblClass = pblClassMapper.toEntity(dto);
@@ -120,10 +114,6 @@ public class PblClassServiceImpl implements PblClassService {
         }
         PblClass existingClass = findClassAndValidateAccess(pblClassId, account);
 
-        if (dto.getMinStudentsPerGroup() > dto.getMaxStudentsPerGroup()) {
-            throw new ValidationException("Minimum students per group cannot be greater than maximum");
-        }
-
         pblClassMapper.updatePblClass(existingClass, dto);
         return pblClassMapper.toResponseDTO(pblClassRepository.save(existingClass));
     }
@@ -160,7 +150,6 @@ public class PblClassServiceImpl implements PblClassService {
                 }
                 throw new IllegalStateException("You are not enrolled in this class");
             }
-            default -> throw new IllegalStateException("Invalid user role");
         };
     }
 
@@ -170,13 +159,6 @@ public class PblClassServiceImpl implements PblClassService {
         if (existingClass.getGroups() != null && !existingClass.getGroups().isEmpty()) {
             for (PblGroup group : existingClass.getGroups()) {
                 int currentSize = group.getCurrentMemberCount();
-
-                if (requestDTO.getMinStudentsPerGroup() > currentSize) {
-                    throw new ValidationException(
-                            String.format("Cannot increase minimum group size to %d because group '%s' currently has %d members",
-                                    requestDTO.getMinStudentsPerGroup(), group.getGroupName(), currentSize)
-                    );
-                }
 
                 if (requestDTO.getMaxStudentsPerGroup() < currentSize) {
                     throw new ValidationException(

@@ -3,6 +3,7 @@ import com.example.pblManagement.mappers.StudentMapper;
 import com.example.pblManagement.model.dto.common.PasswordChangeDTO;
 import com.example.pblManagement.model.dto.user.*;
 import com.example.pblManagement.model.entities.Student;
+import com.example.pblManagement.model.entities.enums.UserRole;
 import com.example.pblManagement.repositories.MajorRepository;
 import com.example.pblManagement.repositories.StudentRepository;
 import com.example.pblManagement.service.StudentService;
@@ -28,6 +29,8 @@ public class StudentServiceImpl implements StudentService {
     // Admin: Create new student
     @Override
     public StudentResponseDTO createStudent(StudentRequestDTO dto) {
+        securityUtils.verifyAdmin();
+
         // Check if mail already exists
         if (studentRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("Email already exists");
@@ -39,6 +42,7 @@ public class StudentServiceImpl implements StudentService {
         }
 
         Student student = studentMapper.toEntity(dto);
+        student.setRole(UserRole.STUDENT);
 
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
             student.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -74,6 +78,8 @@ public class StudentServiceImpl implements StudentService {
     // Admin: Update student
     @Override
     public StudentResponseDTO updateStudent(String id, StudentRequestDTO dto) {
+        securityUtils.verifyAdmin();
+
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
 
@@ -100,15 +106,19 @@ public class StudentServiceImpl implements StudentService {
     // Admin: Delete student
     @Override
     public void deleteStudent(String id) {
+        securityUtils.verifyAdmin();
+
         if (!studentRepository.existsById(id)) {
             throw new EntityNotFoundException("student not found with id: " + id);
         }
         studentRepository.deleteById(id);
     }
 
-    // student: Update own profile
+    // Student: Update own profile
     @Override
     public StudentResponseDTO updateOwnProfile(StudentSelfUpdateRequestDTO dto) {
+        securityUtils.verifyStudent();
+
         String currentStudentId = securityUtils.getCurrentUserId();
         Student student = studentRepository.findById(currentStudentId)
                 .orElseThrow(() -> new EntityNotFoundException("student not found"));
@@ -122,6 +132,8 @@ public class StudentServiceImpl implements StudentService {
     // Separate endpoint for password change
     @Override
     public void changePassword(PasswordChangeDTO dto) {
+        securityUtils.verifyStudent();
+
         String currentStudentId = securityUtils.getCurrentUserId();
         Student student = studentRepository.findById(currentStudentId)
                 .orElseThrow(() -> new EntityNotFoundException("Student not found"));
@@ -139,6 +151,8 @@ public class StudentServiceImpl implements StudentService {
     // student: Get own profile
     @Override
     public StudentResponseDTO getOwnProfile() {
+        securityUtils.verifyStudent();
+
         String currentUserId = securityUtils.getCurrentUserId();
         Student student = studentRepository.findById(currentUserId)
                 .orElseThrow(() -> new EntityNotFoundException("student not found"));
