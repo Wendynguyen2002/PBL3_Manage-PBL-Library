@@ -32,7 +32,19 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/login", "/error").permitAll()
+                        .requestMatchers(
+                                "/api/auth/**",      // Auth endpoints
+                                "/login",            // Login page
+                                "/error",            // Error page
+                                "/dashboard",        // Dashboard (for authenticated)
+
+                                // SWAGGGER / OPENAPI endpoints
+                                "/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

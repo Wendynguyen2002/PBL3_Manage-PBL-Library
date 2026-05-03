@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:16
     ports:
-      - "5432:5432"
+      - "5433:5432"
     restart: always
     environment:
       POSTGRES_DB: postgres
@@ -30,6 +30,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: abcdefgh!
+      SPRING_PROFILES_ACTIVE: docker
     restart: always
 
 volumes:
