@@ -38,11 +38,6 @@ public class ProgressTask {
     @JoinColumn(name = "pbl_class_id", nullable = false)
     private PblClass pblClass;
 
-    // Many tasks created by this lecturer
-    @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false)
-    private Lecturer createdBy;
-
     // One task will have many submissions from many corresponding groups
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<TaskSubmission> submissions = new ArrayList<>();

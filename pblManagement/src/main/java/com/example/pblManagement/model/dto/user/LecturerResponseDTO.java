@@ -13,8 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class LecturerResponseDTO extends AccountResponseDTO{
-    private String id;
+public class LecturerResponseDTO extends AccountResponseDTO {
     private String specialization;
     private String position;
     private String degree;

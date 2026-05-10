@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class LookupDepartmentMapper {
     private final DepartmentRepository departmentRepository;
 
-    // On creating a lecturer, assign a department
+    // On creation, assign a department
     @Named("mapDepartment")
     public Department mapDepartment(String departmentId) {
         if (departmentId == null) return null;

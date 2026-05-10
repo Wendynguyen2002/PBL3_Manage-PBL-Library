@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PblGroupSummaryDTO {
+    private Long id;
     private String projectTitle; // Can be null if not chosen
     private String groupName;
     private List<StudentSummaryDTO> members;

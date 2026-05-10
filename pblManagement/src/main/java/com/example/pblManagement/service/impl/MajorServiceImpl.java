@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -55,6 +57,19 @@ public class MajorServiceImpl implements MajorService {
         }
 
         return majorsPage.map(majorMapper::toSummaryDTO);
+    }
+
+    // Get all majors for a department (no pagination, for dropdown)
+    @Override
+    public List<MajorSummaryDTO> getMajorsByDepartment(String departmentId) {
+        if (!departmentRepository.existsById(departmentId)) {
+            throw new IllegalArgumentException("Department not found with ID: " + departmentId);
+        }
+
+        List<Major> majors = majorRepository.findByDepartmentId(departmentId);
+        return majors.stream()
+                .map(majorMapper::toSummaryDTO)
+                .toList();
     }
 
     @Override

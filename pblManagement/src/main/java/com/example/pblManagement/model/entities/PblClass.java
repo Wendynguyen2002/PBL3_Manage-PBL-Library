@@ -2,6 +2,7 @@ package com.example.pblManagement.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,17 +44,26 @@ public class PblClass {
     @OrderBy("dueDate ASC")
     private List<ProgressTask> progressTasks = new ArrayList<>();
 
-    // 1 class with 1 universal final report template
-    @OneToOne(mappedBy = "pblClass", cascade = CascadeType.ALL)
-    private FinalReportTemplate finalReportTemplate;
+    // Enrolled students in many classes
+    @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Enrollment> enrollments = new ArrayList<>();
 
-    // Students enrolled in this class (whether grouped or not)
     @ManyToMany
     @JoinTable(
-            name = "class_enrollments",
+            name = "pbl_class_majors",
             joinColumns = @JoinColumn(name = "pbl_class_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
+            inverseJoinColumns = @JoinColumn(name = "major_id")
     )
-    private List<Student> enrolledStudents = new ArrayList<>();
+    private List<Major> majors;
 
+    @Column(nullable = false)
+    private LocalDateTime finalReportDeadline;  // When final reports are due
+
+    @Column(nullable = false)
+    private boolean isFinalReportLocked = false;  // Automatically becomes true after deadline
+
+    // Helper method to check if editing is allowed
+    public boolean canEditFinalReport() {
+        return !isFinalReportLocked && LocalDateTime.now().isBefore(finalReportDeadline);
+    }
 }

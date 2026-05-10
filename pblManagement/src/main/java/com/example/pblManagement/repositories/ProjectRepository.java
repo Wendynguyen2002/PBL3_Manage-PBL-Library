@@ -19,7 +19,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findByPblClassIdAndStatus(String pblClassId, ProjectStatus status);
 
     // Find available projects for a class (for dropdown)
-    @Query("SELECT p FROM Project p WHERE p.pblClass.id = :pblClassId AND (p.status = 'AVAILABLE' OR p.assignedGroup IS NULL)")
+    @Query("SELECT p FROM Project p WHERE p.pblClass.id = :pblClassId AND p.status = 'AVAILABLE'")
     List<Project> findAvailableProjectsByClassId(@Param("pblClassId") String pblClassId);
 
     // Check if a project is already taken
@@ -32,4 +32,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     // Count available projects for a class
     long countByPblClassIdAndStatus(String pblClassId, ProjectStatus status);
+
+    boolean existsByPblClassIdAndTitle(String pblClassId, String title);
 }

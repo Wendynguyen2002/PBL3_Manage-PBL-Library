@@ -40,6 +40,11 @@ public class ProjectServiceImpl implements ProjectService {
             throw new IllegalStateException("You can only create projects for your own classes");
         }
 
+        boolean titleExists = projectRepository.existsByPblClassIdAndTitle(pblClassId, dto.getTitle());
+        if (titleExists) {
+            throw new ValidationException("A project with this title already exists in this class");
+        }
+
         Project project = projectMapper.toEntity(dto);
         project.setPblClass(pblClass);
         project.setStatus(ProjectStatus.AVAILABLE);

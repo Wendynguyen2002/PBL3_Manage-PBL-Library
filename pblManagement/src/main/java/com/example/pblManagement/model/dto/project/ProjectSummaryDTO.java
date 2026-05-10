@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ProjectSummaryDTO {
+    private Long id;
     private String title;
-    private String status;
 }

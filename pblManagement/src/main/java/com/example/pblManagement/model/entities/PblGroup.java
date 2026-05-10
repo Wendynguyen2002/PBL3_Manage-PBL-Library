@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "pbl_groups")
@@ -30,12 +29,12 @@ public class PblGroup {
     @JoinColumn(name = "project_id", unique = true)
     private Project project;
 
-    // 1 group has many memberships
+    // 1 group has many enrollments
     @OneToMany(mappedBy = "pblGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GroupMembership> memberships = new ArrayList<>();
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     public int getCurrentMemberCount() {
-        return memberships != null ? memberships.size() : 0;
+        return enrollments != null ? enrollments.size() : 0;
     }
 
     public boolean isFull() {

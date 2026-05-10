@@ -25,7 +25,7 @@ public class PblClassController {
 
     // Create PBL class
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<PblClassResponseDTO> createPblClass(
             @Valid @RequestBody PblClassRequestDTO dto,
             @CurrentUser Account account) {
@@ -41,7 +41,7 @@ public class PblClassController {
         return ResponseEntity.ok(classes);
     }
 
-    // Tab 1: PBL class metadata
+    // Get PBL class metadata
     @GetMapping("/{pblClassId}")
     public ResponseEntity<PblClassResponseDTO> getPblClassById(
             @PathVariable String pblClassId,
@@ -50,7 +50,7 @@ public class PblClassController {
         return ResponseEntity.ok(pblClass);
     }
 
-    // Tab 2: List of enrolled students
+    // Get the list of enrolled students
     @GetMapping("/{pblClassId}/students")
     public ResponseEntity<List<StudentSummaryDTO>> getEnrolledStudents(
             @PathVariable String pblClassId,
@@ -59,7 +59,17 @@ public class PblClassController {
         return ResponseEntity.ok(students);
     }
 
-    // Details of a specific enrolled student
+    // Get available students that can be added (filtered by class majors)
+    @GetMapping("/{pblClassId}/available-students")
+    @PreAuthorize("hasRole('LECTURER')")
+    public ResponseEntity<List<StudentSummaryDTO>> getAvailableStudents(
+            @PathVariable String pblClassId,
+            @CurrentUser Account account) {
+        List<StudentSummaryDTO> availableStudents = pblClassService.getAvailableStudentsForClass(pblClassId, account);
+        return ResponseEntity.ok(availableStudents);
+    }
+
+    // Get the details of a specific enrolled student from the list
     @GetMapping("/{pblClassId}/students/{studentId}")
     public ResponseEntity<StudentResponseDTO> getStudentInClass(
             @PathVariable String pblClassId,
@@ -79,7 +89,7 @@ public class PblClassController {
 
     // Update PBL class
     @PutMapping("/{pblClassId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'LECTURER')")
+    @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<PblClassResponseDTO> updatePblClass(
             @PathVariable String pblClassId,
             @Valid @RequestBody PblClassRequestDTO dto,
@@ -90,11 +100,33 @@ public class PblClassController {
 
     // Delete PBL class
     @DeleteMapping("/{pblClassId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<Void> deletePblClass(
             @PathVariable String pblClassId,
             @CurrentUser Account account) {
         pblClassService.deletePblClass(pblClassId, account);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Add students to class
+    @PostMapping("/{pblClassId}/students")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LECTURER')")
+    public ResponseEntity<Void> addStudentsToClass(
+            @PathVariable String pblClassId,
+            @RequestBody List<String> studentIds,
+            @CurrentUser Account account) {
+        pblClassService.addStudentsToClass(pblClassId, studentIds, account);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // Remove student from class
+    @DeleteMapping("/{pblClassId}/students/{studentId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'LECTURER')")
+    public ResponseEntity<Void> removeStudentFromClass(
+            @PathVariable String pblClassId,
+            @PathVariable String studentId,
+            @CurrentUser Account account) {
+        pblClassService.removeStudentFromClass(pblClassId, studentId, account);
         return ResponseEntity.noContent().build();
     }
 }

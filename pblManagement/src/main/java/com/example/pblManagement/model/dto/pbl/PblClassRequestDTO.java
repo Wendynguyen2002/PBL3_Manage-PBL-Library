@@ -3,6 +3,9 @@ package com.example.pblManagement.model.dto.pbl;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +29,10 @@ public class PblClassRequestDTO {
     @Max(value = 10, message = "Maximum students per group cannot exceed 10")
     private Integer maxStudentsPerGroup;
 
-    @NotNull(message = "Lecturer ID is required")
-    private String lecturerId;
+    @NotNull(message = "At least one major ID is required")
+    private List<String> majorId;
 
+    @NotNull(message = "Final report deadline is required")
+    @Future(message = "Deadline must be in the future")
+    private LocalDateTime finalReportDeadline;
 }

@@ -31,8 +31,12 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: abcdefgh!
       SPRING_PROFILES_ACTIVE: docker
+      FILE_UPLOAD_DIR: /app/uploads/final-reports
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - uploads_data:/app/uploads
     restart: always
 
 volumes:
   postgres_data:
-
+  uploads_data:

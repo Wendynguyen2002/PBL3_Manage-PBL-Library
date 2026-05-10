@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/majors")
 @RequiredArgsConstructor
@@ -32,6 +34,14 @@ public class MajorController {
     @GetMapping("/{id}")
     public ResponseEntity<MajorSummaryDTO> getMajorById(@PathVariable String id) {
         return ResponseEntity.ok(majorService.getMajorById(id));
+    }
+
+    // Get majors by department (for dropdown when creating PBL class)
+    @GetMapping("/by-department/{departmentId}")
+    public ResponseEntity<List<MajorSummaryDTO>> getMajorsByDepartment(
+            @PathVariable String departmentId) {
+        List<MajorSummaryDTO> majors = majorService.getMajorsByDepartment(departmentId);
+        return ResponseEntity.ok(majors);
     }
 
     // Get all majors with search and pagination

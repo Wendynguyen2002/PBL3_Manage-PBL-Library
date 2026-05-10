@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MajorRepository extends JpaRepository<Major, String> {
     @Query("""
@@ -17,4 +19,7 @@ public interface MajorRepository extends JpaRepository<Major, String> {
            LOWER(m.department.name) LIKE LOWER(CONCAT('%', :search, '%')) 
 """)
     Page<Major> searchMajors(String search, Pageable pageable);
+
+    // Find majors by department ID (for dropdown filtering)
+    List<Major> findByDepartmentId(String departmentId);
 }

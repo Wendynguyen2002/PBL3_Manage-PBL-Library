@@ -21,6 +21,7 @@ import java.util.List;
 public class ProjectController {
     private final ProjectService projectService;
 
+    // Lecturer: Create a project
     @PostMapping
     @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<ProjectResponseDTO> createProject (
@@ -31,6 +32,7 @@ public class ProjectController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
+    // View all projects of a PBL class
     @GetMapping
     public ResponseEntity<List<ProjectSummaryDTO>> getProjectsByPblClass(
             @PathVariable String pblClassId,
@@ -39,6 +41,7 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
+    // View in details of a project
     @GetMapping("/{projectId}")
     public ResponseEntity<ProjectResponseDTO> getProjectById(
             @PathVariable String pblClassId,
@@ -48,6 +51,16 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
+    // Get projects for dropdown for groups
+    @GetMapping("/available")
+    public ResponseEntity<List<ProjectSummaryDTO>> getAvailableProjects(
+            @PathVariable String pblClassId,
+            @CurrentUser Account account) {
+        List<ProjectSummaryDTO> projects = projectService.getAvailableProjects(pblClassId, account);
+        return ResponseEntity.ok(projects);
+    }
+
+    // Lecturer: Update a project
     @PutMapping("/{projectId}")
     @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<ProjectResponseDTO> updateProject(
@@ -59,6 +72,7 @@ public class ProjectController {
         return ResponseEntity.ok(updated);
     }
 
+    // Lecturer: Delete a project
     @DeleteMapping("/{projectId}")
     @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<Void> deleteProject(

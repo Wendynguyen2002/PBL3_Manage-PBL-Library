@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 public interface MajorService {
     MajorSummaryDTO createMajor(MajorRequestDTO dto);
@@ -15,6 +17,9 @@ public interface MajorService {
     MajorSummaryDTO getMajorById(String id);
 
     Page<MajorSummaryDTO> getAllMajors(String search, Pageable pageable);
+
+    // Get all majors for a department (no pagination, for dropdown)
+    List<MajorSummaryDTO> getMajorsByDepartment(String departmentId);
 
     MajorSummaryDTO updateMajor(String id, MajorRequestDTO dto);
 

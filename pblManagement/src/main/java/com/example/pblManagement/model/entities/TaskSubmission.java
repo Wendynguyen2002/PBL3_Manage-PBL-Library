@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 // Represents group's submission for a specific task in a PBL course
-// Viewed only by students
 public class TaskSubmission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +35,7 @@ public class TaskSubmission {
     // Status for lecturer review
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private TaskSubmissionStatus status;
+    private TaskSubmissionStatus status; // NOT_SUBMITTED, SUBMITTED, REVIEWED
 
     // Relationship to task
     @ManyToOne
@@ -52,7 +51,7 @@ public class TaskSubmission {
     @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubmissionLink> links = new ArrayList<>();
 
-    // Who submitted (the group leader or any member)
+    // Who submitted
     @ManyToOne
     @JoinColumn(name = "submitted_by", nullable = false)
     private Student submittedBy;

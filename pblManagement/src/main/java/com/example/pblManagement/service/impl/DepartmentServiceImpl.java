@@ -74,7 +74,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentsPage.map(departmentMapper::toSummaryDTO);
     }
 
-    // Get all departments for dropdown on major creation
+    // Get all departments for dropdown
     @Override
     public List<DepartmentSummaryDTO> getAllDepartmentsForDropdown() {
         return departmentRepository.findAllForDropdown()

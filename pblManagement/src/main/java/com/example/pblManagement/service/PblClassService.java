@@ -14,6 +14,9 @@ public interface PblClassService {
 
     List<PblClassSummaryDTO> getPblClassesForUser(Account account);
 
+    // Get available students for enrollment (filtered by majors)
+    List<StudentSummaryDTO> getAvailableStudentsForClass(String pblClassId, Account account);
+
     PblClassResponseDTO getPblClassById(String PblClassId, Account account);
 
     // Get enrolled students for a class (tab 2)
@@ -21,6 +24,10 @@ public interface PblClassService {
 
     // Get specific student details from a class (on click in tab 2)
     StudentResponseDTO getStudentInClass(String pblClassId, String studentId, Account account);
+
+    void addStudentsToClass(String pblClassId, List<String> studentIds, Account account);
+
+    void removeStudentFromClass(String pblClassId, String studentId, Account account);
 
     // Update PBL class
     PblClassResponseDTO updatePblClass(String pblClassId, PblClassRequestDTO dto, Account account);

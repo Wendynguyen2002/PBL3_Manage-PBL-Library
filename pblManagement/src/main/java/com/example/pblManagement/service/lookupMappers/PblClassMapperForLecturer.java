@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class PblClassMapperForLecturer {
+    // Only extract PBL classes' IDs
     @Named("mapPblClassIds")
     public List<String> toIds(List<PblClass> pblClasses) {
         if (pblClasses == null) return null;
@@ -20,6 +21,7 @@ public class PblClassMapperForLecturer {
                 .collect(Collectors.toList());
     }
 
+    // Only extract PBL classes' names
     @Named("mapPblClassNames")
     public List<String> toNames(List<PblClass> pblClasses) {
         if (pblClasses == null) return null;

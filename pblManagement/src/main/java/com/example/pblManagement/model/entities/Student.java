@@ -24,10 +24,7 @@ public class Student extends Account{
     @JoinColumn(name = "major_id")
     private Major major;
 
-    // One student might be able to be in many groups across many PBL classes
+    // One student can be enrolled across different PBL classes
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<GroupMembership> groupMemberships = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "enrolledStudents")
-    private List<PblClass> enrolledClasses = new ArrayList<>();
+    private List<Enrollment> enrollments = new ArrayList<>();
 }

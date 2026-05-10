@@ -21,13 +21,9 @@ public class SubmissionLink {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private LinkType linkType;
+    private LinkType linkType; // GITHUB, GOOGLE_DRIVE, OTHER
 
-    // Optional description for the link
-    @Column(length = 200)
-    private String description;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "submission_id", nullable = false)
     private TaskSubmission submission;
 }

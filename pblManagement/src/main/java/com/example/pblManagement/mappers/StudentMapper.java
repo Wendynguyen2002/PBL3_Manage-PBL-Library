@@ -24,4 +24,14 @@ public interface StudentMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "major", source = "majorId", qualifiedByName = "mapMajor")
     void updateStudent(@MappingTarget Student student, StudentRequestDTO dto);
+
+    @Named("mapToStudentSummary")
+    default StudentSummaryDTO mapToStudentSummary(Student student) {
+        if (student == null) return null;
+        return StudentSummaryDTO.builder()
+                .id(student.getId())
+                .fullName(student.getFullName())
+                .homeClass(student.getHomeClass())
+                .build();
+    }
 }
