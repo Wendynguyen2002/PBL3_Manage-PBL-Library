@@ -1,11 +1,9 @@
 package com.example.pblManagement.model.entities;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,7 +25,16 @@ public class Lecturer extends Account{
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToMany
-    @JoinColumn(name = "pbl_class_id")
-    private List<PblClass> pblClasses;
+    @Builder.Default
+    @OneToMany(mappedBy = "lecturer")
+    private List<PblClass> pblClasses = new ArrayList<>();
+
+    @PreRemove
+    private void preRemove() {
+        if (pblClasses != null && !pblClasses.isEmpty()) {
+            throw new IllegalStateException(
+                    "Cannot delete lecturers present in " + pblClasses.size() + " PBL classes. Delete PBL classes first."
+            );
+        }
+    }
 }

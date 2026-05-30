@@ -8,6 +8,7 @@ import com.example.pblManagement.repositories.StudentRepository;
 import com.example.pblManagement.service.CurrentUserService;
 import com.example.pblManagement.utils.SecurityUtils;
 import com.example.pblManagement.utils.UserDetailsImpl;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,11 @@ public class CurrentUserServiceImpl implements CurrentUserService {
 
         return switch (role) {
             case ADMIN -> adminRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalStateException("Admin not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
             case LECTURER -> lecturerRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalStateException("Lecturer not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
             case STUDENT -> studentRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalStateException("Student not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Student not found"));
         };
     }
 

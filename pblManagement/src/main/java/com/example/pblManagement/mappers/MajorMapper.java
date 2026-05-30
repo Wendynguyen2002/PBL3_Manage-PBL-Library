@@ -2,6 +2,7 @@ package com.example.pblManagement.mappers;
 
 import com.example.pblManagement.model.dto.others.MajorRequestDTO;
 import com.example.pblManagement.model.dto.others.MajorSummaryDTO;
+import com.example.pblManagement.model.entities.Department;
 import com.example.pblManagement.model.entities.Major;
 import com.example.pblManagement.service.lookupMappers.LookupDepartmentMapper;
 import org.mapstruct.*;
@@ -17,4 +18,11 @@ public interface MajorMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "department", source = "departmentId", qualifiedByName = "mapDepartment")
     void updateMajor(@MappingTarget Major major, MajorRequestDTO dto);
+
+    // Extract 1 department name
+    @Named("mapDepartmentName")
+    default String mapDepartmentName(Department department) {
+        if (department == null) return null;
+        return department.getName();
+    }
 }

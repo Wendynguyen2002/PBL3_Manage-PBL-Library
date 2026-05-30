@@ -18,7 +18,7 @@ import java.util.List;
 public class PblGroupController {
     private final PblGroupService pblGroupService;
 
-    // Get all groups in a class (anyone enrolled/assigned can view)
+    // All roles: Get all groups in a class (anyone enrolled/assigned can view)
     @GetMapping
     public ResponseEntity<List<PblGroupSummaryDTO>> getGroupsByClass(
             @PathVariable String pblClassId,
@@ -71,7 +71,7 @@ public class PblGroupController {
 
     // Lecturer: Remove student from group
     @DeleteMapping("/{groupId}/students/{studentId}")
-    @PreAuthorize("hasAnyRole('LECTURER', 'ADMIN')")
+    @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<Void> removeStudentFromGroup(
             @PathVariable String pblClassId,
             @PathVariable Long groupId,
@@ -83,7 +83,7 @@ public class PblGroupController {
 
     // Lecturer: Delete group
     @DeleteMapping("/{groupId}")
-    @PreAuthorize("hasAnyRole('LECTURER', 'ADMIN')")
+    @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<Void> deleteGroup(
             @PathVariable String pblClassId,
             @PathVariable Long groupId,

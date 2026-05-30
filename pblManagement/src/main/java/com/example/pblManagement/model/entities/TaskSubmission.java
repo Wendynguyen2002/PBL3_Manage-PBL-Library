@@ -34,7 +34,7 @@ public class TaskSubmission {
 
     // Status for lecturer review
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private TaskSubmissionStatus status; // NOT_SUBMITTED, SUBMITTED, REVIEWED
 
     // Relationship to task
@@ -48,6 +48,7 @@ public class TaskSubmission {
     private PblGroup group;
 
     // Links submitted by students
+    @Builder.Default
     @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubmissionLink> links = new ArrayList<>();
 

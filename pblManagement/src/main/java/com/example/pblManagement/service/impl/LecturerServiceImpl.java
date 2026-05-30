@@ -2,6 +2,7 @@ package com.example.pblManagement.service.impl;
 import com.example.pblManagement.mappers.LecturerMapper;
 import com.example.pblManagement.model.dto.common.PasswordChangeDTO;
 import com.example.pblManagement.model.dto.user.*;
+import com.example.pblManagement.model.entities.Account;
 import com.example.pblManagement.model.entities.Lecturer;
 import com.example.pblManagement.model.entities.enums.UserRole;
 import com.example.pblManagement.repositories.DepartmentRepository;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class LecturerServiceImpl implements LecturerService {
     private final LecturerRepository lecturerRepository;
     private final LecturerMapper lecturerMapper;
@@ -27,43 +27,46 @@ public class LecturerServiceImpl implements LecturerService {
     private final SecurityUtils securityUtils;
 
     // Admin: Create new lecturer
+    @Transactional
     @Override
     public LecturerResponseDTO createLecturer(LecturerRequestDTO dto) {
         securityUtils.verifyAdmin();
 
-        // Check if mail already exists
-        if (lecturerRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-
         // Verify department exists
         if (!departmentRepository.existsById(dto.getDepartmentId())) {
-            throw new IllegalArgumentException("Department not found");
+            throw new EntityNotFoundException("Department not found");
         }
 
+        // Auto generate email from lecturer ID
+        String generatedEmail = generateLecturerEmail(dto.getId());
+        String generatedPassword = generateLecturerPassword(dto.getId());
+
+        // Create lecturer entity
         Lecturer lecturer = lecturerMapper.toEntity(dto);
+        lecturer.setEmail(generatedEmail);
+        lecturer.setPassword(passwordEncoder.encode(generatedPassword));
         lecturer.setRole(UserRole.LECTURER);
-
-        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-            lecturer.setPassword(passwordEncoder.encode(dto.getPassword()));
-        } else {
-            lecturer.setPassword(passwordEncoder.encode(dto.getId())); // Default password is the lecturer's ID
-        }
 
         return lecturerMapper.toResponseDTO(lecturerRepository.save(lecturer));
     }
 
     // Admin: Get lecturer by ID with full details
+    @Transactional(readOnly = true)
     @Override
     public LecturerResponseDTO getLecturerById(String id) {
+        securityUtils.verifyAdmin();
+
         Lecturer lecturer = lecturerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
         return lecturerMapper.toResponseDTO(lecturer);
     }
 
     // Admin: Get all lecturers with search and pagination
+    @Transactional(readOnly = true)
     @Override
     public Page<LecturerSummaryDTO> getAllLecturers(String search, Pageable pageable) {
+        securityUtils.verifyAdmin();
+
         Page<Lecturer> lecturersPage;
 
         if (search == null || search.trim().isEmpty()) {
@@ -76,17 +79,13 @@ public class LecturerServiceImpl implements LecturerService {
     }
 
     // Admin: Update lecturer
+    @Transactional
     @Override
     public LecturerResponseDTO updateLecturer(String id, LecturerRequestDTO dto) {
         securityUtils.verifyAdmin();
 
         Lecturer lecturer = lecturerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
-
-        // Check email uniqueness if changed
-        if (!lecturer.getEmail().equals(dto.getEmail()) && lecturerRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
 
         // Verify department exists
         if (!departmentRepository.existsById(dto.getDepartmentId())) {
@@ -95,15 +94,11 @@ public class LecturerServiceImpl implements LecturerService {
 
         lecturerMapper.updateLecturer(lecturer, dto);
 
-        // Only update password if provided
-        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-            lecturer.setPassword(passwordEncoder.encode(dto.getPassword()));
-        }
-
         return lecturerMapper.toResponseDTO(lecturerRepository.save(lecturer));
     }
 
     // Admin: Delete lecturer
+    @Transactional
     @Override
     public void deleteLecturer(String id) {
         securityUtils.verifyAdmin();
@@ -114,14 +109,26 @@ public class LecturerServiceImpl implements LecturerService {
         lecturerRepository.deleteById(id);
     }
 
-    // Lecturer: Update own profile
+    // Admin: Reset lecturer password to default format
+    @Transactional
     @Override
-    public LecturerResponseDTO updateOwnProfile(LecturerSelfUpdateRequestDTO dto) {
-        securityUtils.verifyLecturer();
+    public void resetLecturerPassword(String id) {
+        securityUtils.verifyAdmin();
 
-        String currentLecturerId = securityUtils.getCurrentUserId();
-        Lecturer lecturer = lecturerRepository.findById(currentLecturerId)
+        Lecturer lecturer = lecturerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
+
+        // Reset to original password format: Udn@{lecturerId}
+        String defaultPassword = generateLecturerPassword(lecturer.getId());
+        lecturer.setPassword(passwordEncoder.encode(defaultPassword));
+        lecturerRepository.save(lecturer);
+    }
+
+    // Lecturer: Update own profile
+    @Transactional
+    @Override
+    public LecturerResponseDTO updateOwnProfile(LecturerSelfUpdateRequestDTO dto, Account account) {
+        Lecturer lecturer = (Lecturer) account;
 
         lecturerMapper.updateSelf(lecturer, dto);
 
@@ -129,14 +136,11 @@ public class LecturerServiceImpl implements LecturerService {
         return lecturerMapper.toResponseDTO(updated);
     }
 
-    // Separate endpoint for password change
+    // Lecturer: Change own password
+    @Transactional
     @Override
-    public void changePassword(PasswordChangeDTO dto) {
-        securityUtils.verifyLecturer();
-
-        String currentLecturerId = securityUtils.getCurrentUserId();
-        Lecturer lecturer = lecturerRepository.findById(currentLecturerId)
-                .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
+    public void changePassword(PasswordChangeDTO dto, Account account) {
+        Lecturer lecturer = (Lecturer) account;
 
         // Verify current password
         if (!passwordEncoder.matches(dto.getCurrentPassword(), lecturer.getPassword())) {
@@ -145,18 +149,27 @@ public class LecturerServiceImpl implements LecturerService {
 
         // Set new password
         lecturer.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+
         lecturerRepository.save(lecturer);
     }
 
     // Lecturer: Get own profile
+    @Transactional(readOnly = true)
     @Override
-    public LecturerResponseDTO getOwnProfile() {
-        securityUtils.verifyLecturer();
-
-        String currentUserId = securityUtils.getCurrentUserId();
-        Lecturer lecturer = lecturerRepository.findById(currentUserId)
-                .orElseThrow(() -> new EntityNotFoundException("Lecturer not found"));
+    public LecturerResponseDTO getOwnProfile(Account account) {
+        Lecturer lecturer = (Lecturer) account;
         return lecturerMapper.toResponseDTO(lecturer);
     }
 
+    // Helper method to generate email
+    private String generateLecturerEmail(String lecturerId) {
+        // Format: {lecturerId}gv@dut.udn.vn
+        return lecturerId + "gv@dut.udn.vn";
+    }
+
+    // Helper method to generate default password
+    private String generateLecturerPassword(String lecturerId) {
+        // Format: Udn@{LecturerId}
+        return "Udn@" + lecturerId;
+    }
 }

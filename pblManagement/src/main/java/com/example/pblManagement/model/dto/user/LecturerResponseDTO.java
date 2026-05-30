@@ -1,11 +1,9 @@
 package com.example.pblManagement.model.dto.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,9 +13,16 @@ import java.util.List;
 @SuperBuilder
 public class LecturerResponseDTO extends AccountResponseDTO {
     private String specialization;
+
     private String position;
+
     private String degree;
+
     private String departmentName;
-    private List<String> pblClassIds;
-    private List<String> pblClassNames;
+
+    @Builder.Default
+    private List<String> pblClassNames =  new ArrayList<>();
+
+    @Builder.Default
+    private List<String> pblClassSemesters = new ArrayList<>();
 }

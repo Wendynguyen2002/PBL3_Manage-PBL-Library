@@ -2,11 +2,8 @@ package com.example.pblManagement.service;
 
 import com.example.pblManagement.model.dto.others.MajorRequestDTO;
 import com.example.pblManagement.model.dto.others.MajorSummaryDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,7 +15,6 @@ public interface MajorService {
 
     Page<MajorSummaryDTO> getAllMajors(String search, Pageable pageable);
 
-    // Get all majors for a department (no pagination, for dropdown)
     List<MajorSummaryDTO> getMajorsByDepartment(String departmentId);
 
     MajorSummaryDTO updateMajor(String id, MajorRequestDTO dto);

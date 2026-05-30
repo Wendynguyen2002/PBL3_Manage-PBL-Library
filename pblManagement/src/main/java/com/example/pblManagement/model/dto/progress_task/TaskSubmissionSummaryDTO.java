@@ -12,10 +12,16 @@ import java.time.LocalDateTime;
 @Builder
 public class TaskSubmissionSummaryDTO {
     private Long groupId;
+
     private String groupName;
+
     private boolean hasSubmitted;
+
     private LocalDateTime submittedAt;
+
     private Boolean isLate;
+
     private TaskSubmissionStatus status;
+
     private String submittedByStudentName;
 }

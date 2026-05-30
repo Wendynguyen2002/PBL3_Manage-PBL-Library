@@ -1,4 +1,5 @@
 package com.example.pblManagement.service.impl;
+import com.example.pblManagement.exceptions.DuplicateResourceException;
 import com.example.pblManagement.mappers.ProjectMapper;
 import com.example.pblManagement.model.dto.project.ProjectRequestDTO;
 import com.example.pblManagement.model.dto.project.ProjectResponseDTO;
@@ -8,12 +9,12 @@ import com.example.pblManagement.model.entities.PblClass;
 import com.example.pblManagement.model.entities.Project;
 import com.example.pblManagement.model.entities.enums.ProjectStatus;
 import com.example.pblManagement.model.entities.enums.UserRole;
-import com.example.pblManagement.repositories.PblClassRepository;
 import com.example.pblManagement.repositories.ProjectRepository;
 import com.example.pblManagement.service.ProjectService;
+import com.example.pblManagement.utils.PblClassAccessValidator;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,28 +22,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
-    private final PblClassRepository pblClassRepository;
     private final ProjectMapper projectMapper;
+    private final PblClassAccessValidator pblClassAccessValidator;
 
+    // Lecturer: Create a new project for groups to choose from
+    @Transactional
     @Override
     public ProjectResponseDTO createProject(String pblClassId, ProjectRequestDTO dto, Account account) {
         if (account.getRole() != UserRole.LECTURER) {
-            throw new IllegalStateException("Only lecturers can create projects.");
+            throw new AccessDeniedException("Only lecturers can create projects.");
         }
 
-        PblClass pblClass = pblClassRepository.findById(pblClassId)
-                .orElseThrow(() -> new IllegalStateException("PBL class not found."));
-
-        if (pblClass.getLecturer() == null || !pblClass.getLecturer().getId().equals(account.getId())) {
-            throw new IllegalStateException("You can only create projects for your own classes");
-        }
+        PblClass pblClass = pblClassAccessValidator.findClassAndValidateAccessAndReturnEntity(pblClassId, account);
 
         boolean titleExists = projectRepository.existsByPblClassIdAndTitle(pblClassId, dto.getTitle());
         if (titleExists) {
-            throw new ValidationException("A project with this title already exists in this class");
+            throw new DuplicateResourceException("A project with this title already exists in this class");
         }
 
         Project project = projectMapper.toEntity(dto);
@@ -52,9 +49,11 @@ public class ProjectServiceImpl implements ProjectService {
         return projectMapper.toResponseDTO(projectRepository.save(project));
     }
 
+    // All roles: Get all projects in this class / Student: Get all available projects on creating/updating group
+    @Transactional(readOnly = true)
     @Override
     public List<ProjectSummaryDTO> getProjectsByPblClass(String pblClassId, Account account) {
-        validatePblClassAccess(pblClassId, account);
+        pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
         List<Project> projects = projectRepository.findByPblClassId(pblClassId);
         return projects.stream()
@@ -62,99 +61,61 @@ public class ProjectServiceImpl implements ProjectService {
                 .toList();
     }
 
+    // All roles: Get the specific details of a project
+    @Transactional(readOnly = true)
     @Override
     public ProjectResponseDTO getProjectById(Long projectId, String pblClassId, Account account) {
-        validatePblClassAccess(pblClassId, account);
+        pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with ID: " + projectId));
-
-        if (!project.getPblClass().getId().equals(pblClassId)) {
-            throw new IllegalStateException("Project does not belong to the specified class");
-        }
+        Project project = validateProject(projectId, pblClassId);
 
         return projectMapper.toResponseDTO(project);
     }
 
+    // Lecturer: Update a project
+    @Transactional
     @Override
     public ProjectResponseDTO updateProject(Long projectId, String pblClassId, ProjectRequestDTO dto, Account account) {
         if (account.getRole() != UserRole.LECTURER) {
-            throw new IllegalStateException("Only lecturers can update projects.");
+            throw new AccessDeniedException("Only lecturers can update projects.");
         }
 
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with ID: " + projectId));
+        pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
-        if (!project.getPblClass().getId().equals(pblClassId)) {
-            throw new IllegalStateException("Project does not belong to the specified class");
-        }
-
-        PblClass pblClass = project.getPblClass();
-        if (pblClass.getLecturer() == null || !pblClass.getLecturer().getId().equals(account.getId())) {
-            throw new IllegalStateException("You can only update projects for your own classes");
-        }
+        Project project = validateProject(projectId, pblClassId);
 
         projectMapper.updateProject(project, dto);
         return projectMapper.toResponseDTO(projectRepository.save(project));
     }
 
+    // Lecturer: Delete a project
+    @Transactional
     @Override
     public void deleteProject(Long projectId, String pblClassId, Account account) {
         if (account.getRole() != UserRole.LECTURER) {
-            throw new IllegalStateException("Only lecturers can delete projects.");
+            throw new AccessDeniedException("Only lecturers can delete projects.");
         }
 
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityNotFoundException("Project not found with ID: " + projectId));
+        pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
-        if(!project.getPblClass().getId().equals(pblClassId)) {
-            throw new IllegalStateException("Project does not belong to the specified class");
-        }
-
-        PblClass pblClass = project.getPblClass();
-        if (pblClass.getLecturer() == null || !pblClass.getLecturer().getId().equals(account.getId())) {
-            throw new IllegalStateException("You can only delete projects for your own classes");
-        }
+        Project project = validateProject(projectId, pblClassId);
 
         if (project.getStatus() == ProjectStatus.TAKEN) {
-            throw new ValidationException("Cannot delete a project that has been taken by a group");
+            throw new IllegalStateException("Cannot delete a project that has been taken by a group.");
         }
 
         projectRepository.delete(project);
     }
 
-    @Override
-    public List<ProjectSummaryDTO> getAvailableProjects(String pblClassId, Account account) {
-        validatePblClassAccess(pblClassId, account);
+    // Helper: Validate project belongs to this class
+    public Project validateProject(Long projectId, String pblClassId) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Project not found with ID: " + projectId));
 
-        List<Project> availableProjects = projectRepository.findAvailableProjectsByClassId(pblClassId);
-        return availableProjects.stream()
-                .map(projectMapper::toSummaryDTO)
-                .toList();
-    }
-
-    // Helper method to validate class access
-    private void validatePblClassAccess(String pblClassId, Account currentUser) {
-        PblClass pblClass = pblClassRepository.findById(pblClassId)
-                .orElseThrow(() -> new EntityNotFoundException("PBL class not found with ID: " + pblClassId));
-
-        switch (currentUser.getRole()) {
-            case ADMIN -> {
-                // Admin can access any class
-            }
-            case LECTURER -> {
-                if (pblClass.getLecturer() != null && pblClass.getLecturer().getId().equals(currentUser.getId())) {
-                    return;
-                }
-                throw new IllegalStateException("You don't have access to this class");
-            }
-            case STUDENT -> {
-                if (pblClassRepository.isStudentEnrolledInClass(pblClassId, currentUser.getId())) {
-                    return;
-                }
-                throw new IllegalStateException("You are not enrolled in this class");
-            }
-            default -> throw new IllegalStateException("Invalid user role");
+        if (!project.getPblClass().getId().equals(pblClassId)) {
+            throw new IllegalStateException("Project does not belong to the specified class");
         }
+
+        return project;
     }
 }

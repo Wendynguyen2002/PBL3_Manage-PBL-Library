@@ -1,9 +1,6 @@
 package com.example.pblManagement.model.entities;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.*;
@@ -25,6 +22,16 @@ public class Student extends Account{
     private Major major;
 
     // One student can be enrolled across different PBL classes
+    @Builder.Default
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
+
+    @PreRemove
+    private void preRemove() {
+        if (enrollments != null && !enrollments.isEmpty()) {
+            throw new IllegalStateException(
+                    "Cannot delete student enrolled in " + enrollments.size() + " PBL class(es). Please delete corresponding PBL classes first."
+            );
+        }
+    }
 }

@@ -10,6 +10,8 @@ import lombok.*;
 @Builder
 public class SubmissionLinkResponseDTO {
     private Long id;
+
     private String url;
+
     private LinkType linkType;
 }

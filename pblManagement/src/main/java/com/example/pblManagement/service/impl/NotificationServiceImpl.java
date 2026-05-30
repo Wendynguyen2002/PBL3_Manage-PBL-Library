@@ -35,6 +35,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<NotificationResponseDTO> getUnreadNotifications(Account account) {
         List<Notification> notifications = notificationRepository
@@ -49,6 +50,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.markAsRead(account.getId(), notificationIds);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public long getUnreadCount(Account account) {
         return notificationRepository.countByUserIdAndIsReadFalse(account.getId());

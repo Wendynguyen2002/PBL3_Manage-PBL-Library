@@ -30,13 +30,13 @@ public class MajorController {
         return new ResponseEntity<>(createdMajor, HttpStatus.CREATED);
     }
 
-    // Get details of a major
+    // All roles: Get details of a major
     @GetMapping("/{id}")
     public ResponseEntity<MajorSummaryDTO> getMajorById(@PathVariable String id) {
         return ResponseEntity.ok(majorService.getMajorById(id));
     }
 
-    // Get majors by department (for dropdown when creating PBL class)
+    // Lecturer: Get majors by department (for dropdown when creating PBL class)
     @GetMapping("/by-department/{departmentId}")
     public ResponseEntity<List<MajorSummaryDTO>> getMajorsByDepartment(
             @PathVariable String departmentId) {
@@ -44,7 +44,7 @@ public class MajorController {
         return ResponseEntity.ok(majors);
     }
 
-    // Get all majors with search and pagination
+    // All roles: Get all majors with search and pagination
     @GetMapping
     public ResponseEntity<Page<MajorSummaryDTO>> getAllMajors(
             @RequestParam(defaultValue = "") String search,

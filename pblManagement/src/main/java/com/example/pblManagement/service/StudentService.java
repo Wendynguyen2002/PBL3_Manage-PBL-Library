@@ -2,8 +2,10 @@ package com.example.pblManagement.service;
 
 import com.example.pblManagement.model.dto.common.PasswordChangeDTO;
 import com.example.pblManagement.model.dto.user.*;
+import com.example.pblManagement.model.entities.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface StudentService {
     StudentResponseDTO createStudent(StudentRequestDTO dto);
@@ -16,9 +18,11 @@ public interface StudentService {
 
     void deleteStudent(String id);
 
-    StudentResponseDTO updateOwnProfile(StudentSelfUpdateRequestDTO dto);
+    void resetStudentPassword(String id);
 
-    void changePassword(PasswordChangeDTO dto);
+    StudentResponseDTO updateOwnProfile(StudentSelfUpdateRequestDTO dto, Account account);
 
-    StudentResponseDTO getOwnProfile();
+    void changePassword(PasswordChangeDTO dto, Account account);
+
+    StudentResponseDTO getOwnProfile(Account account);
 }

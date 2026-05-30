@@ -14,13 +14,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// Junction table, sits between PblGroup and Students
+// Junction table between Student and PblClass, with optional link to PblGroup
 public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // See student.java
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;

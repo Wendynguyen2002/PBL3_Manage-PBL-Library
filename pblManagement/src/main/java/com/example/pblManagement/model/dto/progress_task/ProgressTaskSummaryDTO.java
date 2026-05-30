@@ -9,8 +9,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Available tasks - visible to everyone
 public class ProgressTaskSummaryDTO {
     private Long id;
+
     private String title;
+
     private LocalDateTime dueDate;
 }

@@ -14,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 // Administrators, manage all data in the system
+// There can be only one admin hard-coded in the DB
 public class Admin extends Account{
 
 }

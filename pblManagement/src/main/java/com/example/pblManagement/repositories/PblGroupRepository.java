@@ -13,12 +13,8 @@ import java.util.Optional;
 public interface PblGroupRepository extends JpaRepository<PblGroup, Long> {
     List<PblGroup> findByPblClassIdOrderByGroupName(String pblClassId);
 
+    // Validate group exists in class
     Optional<PblGroup> findByIdAndPblClassId(Long groupId, String pblClassId);
-
-    boolean existsByGroupNameAndPblClassId(String groupName, String pblClassId);
-
-    @Query("SELECT g FROM PblGroup g WHERE g.pblClass.id = :pblClassId AND g.project.id = :projectId")
-    Optional<PblGroup> findByClassIdAndProjectId(@Param("pblClassId") String pblClassId, @Param("projectId") Long projectId);
 
     // Check if student is already in ANY group in this class
     @Query("SELECT CASE WHEN COUNT(e) > 0 THEN true ELSE false END FROM Enrollment e " +
@@ -28,4 +24,10 @@ public interface PblGroupRepository extends JpaRepository<PblGroup, Long> {
     // Get the group a student belongs to in a specific class
     @Query("SELECT e.pblGroup FROM Enrollment e WHERE e.student.id = :studentId AND e.pblClass.id = :pblClassId AND e.pblGroup IS NOT NULL")
     Optional<PblGroup> findStudentGroupInClass(@Param("studentId") String studentId, @Param("pblClassId") String pblClassId);
+
+    @Query("SELECT g.id, SIZE(g.enrollments), g.groupName FROM PblGroup g WHERE g.pblClass.id = :pblClassId")
+    List<Object[]> findGroupIdsAndMemberCounts(@Param("pblClassId") String pblClassId);
+
+    @Query("SELECT DISTINCT g FROM PblGroup g LEFT JOIN FETCH g.enrollments WHERE g.id = :groupId")
+    Optional<PblGroup> findByIdWithEnrollments(@Param("groupId") Long groupId);
 }

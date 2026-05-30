@@ -15,11 +15,11 @@ public interface MajorRepository extends JpaRepository<Major, String> {
     SELECT m from Major m
     WHERE (:search IS NULL OR
            LOWER(m.id) LIKE LOWER(CONCAT('%', :search, '%')) OR
-           LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%'))) OR 
-           LOWER(m.department.name) LIKE LOWER(CONCAT('%', :search, '%')) 
+           LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%'))) OR
+           LOWER(m.department.name) LIKE LOWER(CONCAT('%', :search, '%'))
 """)
     Page<Major> searchMajors(String search, Pageable pageable);
 
-    // Find majors by department ID (for dropdown filtering)
+    // Find majors by department ID (for checklist filtering)
     List<Major> findByDepartmentId(String departmentId);
 }

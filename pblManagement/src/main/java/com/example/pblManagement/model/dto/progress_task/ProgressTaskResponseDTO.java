@@ -12,8 +12,12 @@ import java.time.LocalDateTime;
 // Details of a progress task - visible to anyone
 public class ProgressTaskResponseDTO {
     private Long id;
+
     private String title;
+
     private String description;
+
     private LocalDateTime dueDate;
+
     private LocalDateTime createdAt;
 }

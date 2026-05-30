@@ -16,7 +16,7 @@ import java.util.List;
 public class PblClass {
     @Id
     @Column(nullable = false)
-    private String id; // Ex: 24Nh11
+    private String id;
 
     @Column(nullable = false, length = 100)
     private String className; // Ex: PBL3: Do an cong nghe phan mem
@@ -32,38 +32,39 @@ public class PblClass {
     private Lecturer lecturer;
 
     // 1 PBL class has many groups in it
-    @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL)
+    @Builder.Default
+    @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PblGroup> groups = new ArrayList<>();
 
     // 1 PBL class has many projects to choose from
-    @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL)
+    @Builder.Default
+    @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
 
     // 1 class may have many tasks.
-    @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL)
+    @Builder.Default
+    @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("dueDate ASC")
     private List<ProgressTask> progressTasks = new ArrayList<>();
 
     // Enrolled students in many classes
+    @Builder.Default
     @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Enrollment> enrollments = new ArrayList<>();
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "pbl_class_majors",
             joinColumns = @JoinColumn(name = "pbl_class_id"),
             inverseJoinColumns = @JoinColumn(name = "major_id")
     )
-    private List<Major> majors;
+    private List<Major> majors = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime finalReportDeadline;  // When final reports are due
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean isFinalReportLocked = false;  // Automatically becomes true after deadline
-
-    // Helper method to check if editing is allowed
-    public boolean canEditFinalReport() {
-        return !isFinalReportLocked && LocalDateTime.now().isBefore(finalReportDeadline);
-    }
 }

@@ -37,6 +37,7 @@ public class Notification {
     @Column(nullable = false)
     private String referenceId;  // pblClassId or pblGroupId, etc.
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean isRead = false;
 

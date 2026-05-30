@@ -21,7 +21,7 @@ import java.util.List;
 public class ProgressTaskController {
     private final ProgressTaskService progressTaskService;
 
-    // Get all tasks in a class (anyone with access)
+    // All roles: Get all tasks in a class
     @GetMapping
     public ResponseEntity<List<ProgressTaskSummaryDTO>> getTasksByClass(
             @PathVariable String pblClassId,
@@ -29,7 +29,7 @@ public class ProgressTaskController {
         return ResponseEntity.ok(progressTaskService.getTasksByClass(pblClassId, account));
     }
 
-    // Get single task details (anyone with access)
+    // All roles: Get single task details
     @GetMapping("/{taskId}")
     public ResponseEntity<ProgressTaskResponseDTO> getTaskById(
             @PathVariable String pblClassId,

@@ -8,10 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,29 +26,25 @@ public class AuthController {
     private final SecurityUtils securityUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO request) {
-        try {
-            // Authenticate using email and password
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),  // Using email for auth
-                            request.getPassword()
-                    )
-            );
+    public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
+        // Authenticate using email and password
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
 
-            // Set authentication in security context
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Set authentication in security context
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Get user details
-            UserDetailsImpl userDetails = securityUtils.getCurrentUserDetails();
-            String userId = userDetails.getId();
-            String role = userDetails.getRole().name(); // Get enum name: "ADMIN", "LECTURER", "STUDENT"
-            String email = userDetails.getEmail();
+        // Get user details
+        UserDetailsImpl userDetails = securityUtils.getCurrentUserDetails();
+        String userId = userDetails.getId();
+        String role = userDetails.getRole().name();
+        String email = userDetails.getEmail();
 
-            return ResponseEntity.ok().body(new LoginResponseDTO(userId, email, role, "Login successful"));
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid email or password"));
-        }
+        return ResponseEntity.ok(new LoginResponseDTO(userId, email, role, "Login successful"));
     }
 
     @PostMapping("/logout")

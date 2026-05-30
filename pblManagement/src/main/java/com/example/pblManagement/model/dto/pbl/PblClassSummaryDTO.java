@@ -3,6 +3,7 @@ package com.example.pblManagement.model.dto.pbl;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -12,10 +13,17 @@ import java.util.List;
 @Builder
 public class PblClassSummaryDTO {
     private String id;
+
     private String className;
+
     private String semester;
+
     private String lecturerName;
-    private List<String> majorNames;
+
+    @Builder.Default
+    private List<String> majorNames =  new ArrayList<>();
+
     private LocalDateTime finalReportDeadline;
+
     private boolean isFinalReportLocked;
 }

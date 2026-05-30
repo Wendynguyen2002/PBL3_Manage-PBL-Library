@@ -30,20 +30,22 @@ public class DepartmentController {
         return new ResponseEntity<>(departmentService.createDepartment(dto), HttpStatus.CREATED);
     }
 
-    // Get details of a department
+    // All roles: Get details of a department
     @GetMapping("/{id}")
     public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable String id) {
         return ResponseEntity.ok(departmentService.getDepartmentById(id));
     }
 
-    // Update a department
+    // Admin: Update a department
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<DepartmentResponseDTO> updateDepartment(@RequestParam String id, @Valid @RequestBody DepartmentRequestDTO dto) {
+    public ResponseEntity<DepartmentResponseDTO> updateDepartment(
+            @RequestParam String id,
+            @Valid @RequestBody DepartmentRequestDTO dto) {
         return ResponseEntity.ok(departmentService.updateDepartment(id, dto));
     }
 
-    // Delete a department
+    // Admin: Delete a department
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteDepartment(@PathVariable String id) {
@@ -51,7 +53,7 @@ public class DepartmentController {
         return ResponseEntity.noContent().build();
     }
 
-    // Get the list of departments with search and pagination
+    // All roles: Get the list of departments with search and pagination
     @GetMapping
     public ResponseEntity<Page<DepartmentSummaryDTO>> getAllDepartments(
             @RequestParam(defaultValue = "") String search,
@@ -64,8 +66,9 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.getAllDepartments(search, pageable));
     }
 
-    // For dropdown population on creating major, PBL classes
+    // Admin: Get dropdown population on creating major
     @GetMapping("/dropdown")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<DepartmentSummaryDTO>> getDepartmentsForDropdown() {
         return ResponseEntity.ok(departmentService.getAllDepartmentsForDropdown());
     }

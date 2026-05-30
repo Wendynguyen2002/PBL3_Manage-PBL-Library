@@ -11,8 +11,8 @@ import com.example.pblManagement.model.entities.enums.UserRole;
 import com.example.pblManagement.repositories.*;
 import com.example.pblManagement.service.TaskSubmissionService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class TaskSubmissionServiceImpl implements TaskSubmissionService {
     private final TaskSubmissionRepository taskSubmissionRepository;
     private final ProgressTaskRepository progressTaskRepository;
@@ -36,7 +35,7 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
     // Helper: Validate student is in a group for this class
     private PblGroup getStudentGroupInClass(String studentId, String pblClassId) {
         return pblGroupRepository.findStudentGroupInClass(studentId, pblClassId)
-                .orElseThrow(() -> new ValidationException("You must be in a group to submit tasks"));
+                .orElseThrow(() -> new AccessDeniedException("You must be in a group to submit tasks"));
     }
 
     // Helper: Validate task belongs to class and return it
@@ -45,7 +44,7 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
                 .orElseThrow(() -> new EntityNotFoundException("Task not found: " + taskId));
 
         if (!task.getPblClass().getId().equals(pblClassId)) {
-            throw new ValidationException("Task does not belong to this class");
+            throw new IllegalStateException("Task does not belong to this class");
         }
 
         return task;
@@ -54,7 +53,7 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
     // Helper: Validate lecturer access to class
     private void validateLecturerAccess(String pblClassId, Account account) {
         if (account.getRole() != UserRole.LECTURER && account.getRole() != UserRole.ADMIN) {
-            throw new IllegalStateException("Only lecturers can view all submissions");
+            throw new AccessDeniedException("Only lecturers can view all submissions");
         }
 
         PblClass pblClass = pblClassRepository.findById(pblClassId)
@@ -62,22 +61,23 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
 
         if (account.getRole() == UserRole.LECTURER) {
             if (pblClass.getLecturer() == null || !pblClass.getLecturer().getId().equals(account.getId())) {
-                throw new IllegalStateException("You don't have access to this class");
+                throw new AccessDeniedException("You don't have access to this class");
             }
         }
     }
 
+    @Transactional
     @Override
     public TaskSubmissionResponseDTO submitOrUpdateSubmission(Long taskId, String pblClassId,
                                                               TaskSubmissionRequestDTO dto, Account account) {
         // Only students can submit
         if (account.getRole() != UserRole.STUDENT) {
-            throw new IllegalStateException("Only students can submit tasks");
+            throw new AccessDeniedException("Only students can submit tasks");
         }
 
         // Verify student is enrolled in class
         if (!pblClassRepository.isStudentEnrolledInClass(pblClassId, account.getId())) {
-            throw new ValidationException("You are not enrolled in this class");
+            throw new AccessDeniedException("You are not enrolled in this class");
         }
 
         // Get student's group (must be in a group)
@@ -150,16 +150,17 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
         return taskSubmissionMapper.toResponseDTO(savedSubmission);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public TaskSubmissionResponseDTO getMyGroupSubmission(Long taskId, String pblClassId, Account account) {
         // Only students can view their own submission
         if (account.getRole() != UserRole.STUDENT) {
-            throw new IllegalStateException("Only students can view their own submissions");
+            throw new AccessDeniedException("Only students can view their own submissions");
         }
 
         // Verify student is enrolled
         if (!pblClassRepository.isStudentEnrolledInClass(pblClassId, account.getId())) {
-            throw new ValidationException("You are not enrolled in this class");
+            throw new AccessDeniedException("You are not enrolled in this class");
         }
 
         // Get student's group
@@ -176,6 +177,7 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
         return taskSubmissionMapper.toResponseDTO(submission);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TaskSubmissionSummaryDTO> getAllSubmissionsForTask(Long taskId, String pblClassId, Account account) {
         // Only lecturers can view all submissions
@@ -212,6 +214,7 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public TaskSubmissionResponseDTO getSubmissionByGroup(Long taskId, String pblClassId, Long groupId, Account account) {
         // Only lecturers can view any group's submission

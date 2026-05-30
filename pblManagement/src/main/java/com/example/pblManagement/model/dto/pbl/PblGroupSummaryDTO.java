@@ -3,6 +3,7 @@ package com.example.pblManagement.model.dto.pbl;
 import com.example.pblManagement.model.dto.user.StudentSummaryDTO;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -12,9 +13,15 @@ import java.util.List;
 @Builder
 public class PblGroupSummaryDTO {
     private Long id;
+
     private String projectTitle; // Can be null if not chosen
+
     private String groupName;
-    private List<StudentSummaryDTO> members;
+
+    @Builder.Default
+    private List<StudentSummaryDTO> members = new ArrayList<>();
+
     private Integer currentMemberCount;
+
     private boolean isFull;
 }

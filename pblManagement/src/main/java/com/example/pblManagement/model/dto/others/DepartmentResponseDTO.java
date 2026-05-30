@@ -1,8 +1,8 @@
 package com.example.pblManagement.model.dto.others;
 
-import com.example.pblManagement.model.dto.user.LecturerSummaryDTO;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -15,7 +15,9 @@ public class DepartmentResponseDTO {
 
     private String name;
 
-    private List<String> majorName;
+    @Builder.Default
+    private List<String> majorNames = new ArrayList<>();
 
-    private List<String> lecturerName;
+    @Builder.Default
+    private List<String> lecturerNames  = new ArrayList<>();
 }

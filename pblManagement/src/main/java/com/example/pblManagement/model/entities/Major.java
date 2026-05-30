@@ -26,6 +26,22 @@ public class Major {
     private Department department;
 
     // One major has many students
+    @Builder.Default
     @OneToMany(mappedBy = "major")
     private List<Student> students = new ArrayList<>();
+
+    // 1 class have many majors, and many majors have one class
+    @Builder.Default
+    @ManyToMany(mappedBy = "majors")
+    private List<PblClass> pblClasses = new ArrayList<>();
+
+    // On removal constraints
+    @PreRemove
+    private void preRemove() {
+        if (students != null && !students.isEmpty()) {
+            throw new IllegalStateException(
+                    "Cannot delete major with " + students.size() + " student(s)"
+            );
+        }
+    }
 }

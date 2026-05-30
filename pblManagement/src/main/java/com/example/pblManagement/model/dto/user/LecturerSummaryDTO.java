@@ -13,5 +13,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class LecturerSummaryDTO extends AccountSummaryDTO{
     private String degree;
+
     private String departmentName;
 }

@@ -30,7 +30,8 @@ public class PblGroup {
     private Project project;
 
     // 1 group has many enrollments
-    @OneToMany(mappedBy = "pblGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @OneToMany(mappedBy = "pblGroup")
     private List<Enrollment> enrollments = new ArrayList<>();
 
     public int getCurrentMemberCount() {

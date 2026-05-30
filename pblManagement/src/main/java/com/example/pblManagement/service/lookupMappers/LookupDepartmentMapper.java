@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class LookupDepartmentMapper {
     private final DepartmentRepository departmentRepository;
 
-    // On creation, assign a department
+    // On major creation, assign a department
     @Named("mapDepartment")
     public Department mapDepartment(String departmentId) {
         if (departmentId == null) return null;
@@ -20,10 +20,4 @@ public class LookupDepartmentMapper {
                 .orElseThrow(() -> new EntityNotFoundException("Department not found: " + departmentId));
     }
 
-    // Only extract the department name
-    @Named("mapDepartmentName")
-    public String mapDepartmentName(Department department) {
-        if (department == null) return null;
-        return department.getName();
-    }
 }

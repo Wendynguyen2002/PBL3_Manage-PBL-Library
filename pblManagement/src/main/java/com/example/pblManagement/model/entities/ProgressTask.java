@@ -15,7 +15,6 @@ import java.util.Optional;
 @AllArgsConstructor
 @Builder
 // Progress tasks will be created by lecturer to track project progresses of all groups
-// Viewed only by lecturer
 public class ProgressTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +38,8 @@ public class ProgressTask {
     private PblClass pblClass;
 
     // One task will have many submissions from many corresponding groups
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    @Builder.Default
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskSubmission> submissions = new ArrayList<>();
 
     @PrePersist

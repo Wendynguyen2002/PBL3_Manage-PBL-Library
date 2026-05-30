@@ -26,10 +26,6 @@ public interface PblClassRepository extends JpaRepository<PblClass, String> {
     @Query("SELECT ce.student FROM Enrollment ce WHERE ce.pblClass.id = :pblClassId")
     List<Student> findEnrolledStudentsByPblClassId(@Param("pblClassId") String pblClassId);
 
-    // Count enrolled students for a class
-    @Query("SELECT COUNT(ce) FROM Enrollment ce WHERE ce.pblClass.id = :pblClassId")
-    long countEnrolledStudentsByPblClassId(@Param("pblClassId") String pblClassId);
-
     // Find students that are eligible for a class based on majors AND not already enrolled
     @Query("SELECT s FROM Student s WHERE s.major.id IN :majorIds " +
             "AND s.id NOT IN (SELECT ce.student.id FROM Enrollment ce WHERE ce.pblClass.id = :pblClassId)")
@@ -38,12 +34,4 @@ public interface PblClassRepository extends JpaRepository<PblClass, String> {
             @Param("majorIds") List<String> majorIds
     );
 
-    // Check if a student's major matches any of the class's allowed majors
-    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END " +
-            "FROM PblClass pc JOIN pc.majors m " +
-            "WHERE pc.id = :pblClassId AND m.id = :majorId")
-    boolean isMajorAllowedForClass(
-            @Param("pblClassId") String pblClassId,
-            @Param("majorId") String majorId
-    );
 }

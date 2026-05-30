@@ -2,6 +2,7 @@ package com.example.pblManagement.utils;
 
 import com.example.pblManagement.model.entities.enums.UserRole;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ public class SecurityUtils {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new IllegalStateException("User is not authenticated");
+            throw new BadCredentialsException("User is not authenticated");
         }
 
         Object principal = authentication.getPrincipal();

@@ -9,7 +9,10 @@ import lombok.*;
 @Builder
 public class ProjectResponseDTO {
     private Long id;
+
     private String title;
+
     private String description;
+
     private String status;  // AVAILABLE, TAKEN
 }

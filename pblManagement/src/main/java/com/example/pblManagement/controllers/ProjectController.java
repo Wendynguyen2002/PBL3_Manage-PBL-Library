@@ -32,7 +32,7 @@ public class ProjectController {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
-    // View all projects of a PBL class
+    // All roles: View all projects of a PBL class
     @GetMapping
     public ResponseEntity<List<ProjectSummaryDTO>> getProjectsByPblClass(
             @PathVariable String pblClassId,
@@ -41,7 +41,7 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
-    // View in details of a project
+    // All roles: View specific details of a project
     @GetMapping("/{projectId}")
     public ResponseEntity<ProjectResponseDTO> getProjectById(
             @PathVariable String pblClassId,
@@ -51,12 +51,12 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    // Get projects for dropdown for groups
+    // Student: Get projects for dropdown on creating/updating group (any other roles can still call this controller)
     @GetMapping("/available")
     public ResponseEntity<List<ProjectSummaryDTO>> getAvailableProjects(
             @PathVariable String pblClassId,
             @CurrentUser Account account) {
-        List<ProjectSummaryDTO> projects = projectService.getAvailableProjects(pblClassId, account);
+        List<ProjectSummaryDTO> projects = projectService.getProjectsByPblClass(pblClassId, account);
         return ResponseEntity.ok(projects);
     }
 

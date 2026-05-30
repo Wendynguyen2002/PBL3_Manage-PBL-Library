@@ -4,6 +4,7 @@ import com.example.pblManagement.model.dto.user.StudentRequestDTO;
 import com.example.pblManagement.model.dto.user.StudentResponseDTO;
 import com.example.pblManagement.model.dto.user.StudentSelfUpdateRequestDTO;
 import com.example.pblManagement.model.dto.user.StudentSummaryDTO;
+import com.example.pblManagement.model.entities.Major;
 import com.example.pblManagement.model.entities.Student;
 import com.example.pblManagement.service.lookupMappers.LookupMajorMapper;
 import org.mapstruct.*;
@@ -23,7 +24,17 @@ public interface StudentMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "major", source = "majorId", qualifiedByName = "mapMajor")
+    @Mapping(target = "email", ignore = true)  // Prevent changing email
+    @Mapping(target = "password", ignore = true) // Prevent changing password here (use separate endpoint for password changes)
+    @Mapping(target = "id", ignore = true)  // Prevent changing IDs
     void updateStudent(@MappingTarget Student student, StudentRequestDTO dto);
+
+    // Only extract 1 major name
+    @Named("mapMajorName")
+    default String mapMajorName(Major major) {
+        if (major == null) return null;
+        return major.getName();
+    }
 
     @Named("mapToStudentSummary")
     default StudentSummaryDTO mapToStudentSummary(Student student) {

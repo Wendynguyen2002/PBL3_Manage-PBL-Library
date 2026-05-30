@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -12,10 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class PblClassRequestDTO {
-    @NotBlank(message = "Class ID is required")
+    @NotBlank(message = "PBL class ID is required")
     private String id;
 
-    @NotBlank(message = "Class name is required")
+    @NotBlank(message = "PBL class name is required")
     @Size(min = 3, max = 100, message = "Class name must be between 3 and 100 characters")
     private String className;
 
@@ -29,8 +30,9 @@ public class PblClassRequestDTO {
     @Max(value = 10, message = "Maximum students per group cannot exceed 10")
     private Integer maxStudentsPerGroup;
 
-    @NotNull(message = "At least one major ID is required")
-    private List<String> majorId;
+    @Builder.Default
+    @NotEmpty(message = "At least one major is required")
+    private List<String> majorId = new ArrayList<>();
 
     @NotNull(message = "Final report deadline is required")
     @Future(message = "Deadline must be in the future")

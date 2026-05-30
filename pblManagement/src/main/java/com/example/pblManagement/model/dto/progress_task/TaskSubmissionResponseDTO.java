@@ -5,6 +5,7 @@ import com.example.pblManagement.model.entities.enums.TaskSubmissionStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,20 +15,28 @@ import java.util.List;
 @Builder
 public class TaskSubmissionResponseDTO {
     private Long id;
+
     private String briefDescription;
+
     private LocalDateTime submittedAt;
+
     private LocalDateTime lastModifiedAt;
+
     private Boolean isLate;
+
     private TaskSubmissionStatus status;
 
     // Who submitted
     private StudentSummaryDTO submittedBy;
+
     private StudentSummaryDTO lastModifiedBy;
 
     // Group info
     private Long groupId;
+
     private String groupName;
 
     // Links
-    private List<SubmissionLinkResponseDTO> links;
+    @Builder.Default
+    private List<SubmissionLinkResponseDTO> links =  new ArrayList<>();
 }

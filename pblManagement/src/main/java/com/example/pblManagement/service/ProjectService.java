@@ -19,5 +19,4 @@ public interface ProjectService {
 
     void deleteProject(Long projectId, String pblClassId, Account account);
 
-    List<ProjectSummaryDTO> getAvailableProjects(String pblClassId, Account account);
 }

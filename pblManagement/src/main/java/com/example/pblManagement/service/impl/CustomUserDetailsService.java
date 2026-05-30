@@ -8,6 +8,7 @@ import com.example.pblManagement.repositories.AdminRepository;
 import com.example.pblManagement.repositories.LecturerRepository;
 import com.example.pblManagement.repositories.StudentRepository;
 import com.example.pblManagement.utils.UserDetailsImpl;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,6 +59,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             );
         }
 
-        throw new UsernameNotFoundException("User not found with email: " + email);
+        throw new EntityNotFoundException("User not found with email: " + email);
     }
 }

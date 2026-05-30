@@ -56,7 +56,4 @@ public class UserDetailsImpl implements UserDetails {
         return role == UserRole.STUDENT;
     }
 
-    public String getRoleString() {
-        return "ROLE_" + role.name();
-    }
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// What to show when lecturer request creating a progress task
+// What to show when lecturer requested creating a progress task
 public class ProgressTaskRequestDTO {
     @NotBlank(message = "Title is required")
     @Size(min = 3, max = 200, message = "Title must be between 3 and 200 characters")
