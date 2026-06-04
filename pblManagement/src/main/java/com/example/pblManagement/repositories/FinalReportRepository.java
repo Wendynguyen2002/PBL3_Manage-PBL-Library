@@ -16,9 +16,6 @@ public interface FinalReportRepository extends JpaRepository<FinalReport, Long> 
     // Find report by group and class (1 per group per class)
     Optional<FinalReport> findByGroupIdAndPblClassId(Long groupId, String pblClassId);
 
-    // Check if group already submitted
-    boolean existsByGroupIdAndPblClassId(Long groupId, String pblClassId);
-
     // Get all reports for a class (lecturer view)
     List<FinalReport> findByPblClassIdOrderBySubmittedAtDesc(String pblClassId);
 

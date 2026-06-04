@@ -1,5 +1,6 @@
 package com.example.pblManagement.exceptions;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -126,10 +127,34 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    // 500 - Internal Server Error (File storage errors)
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ErrorResponseDTO> handleFileStorage(FileStorageException ex) {
+        log.error("File storage error: {}", ex.getMessage(), ex);
+
+        ErrorResponseDTO response = ErrorResponseDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message("File operation failed: " + ex.getMessage())
+                .detail(ex.getCause() != null ? ex.getCause().getMessage() : null)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
     // 500 - Internal Server Error (Catch-all for unexpected errors)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex) {
-        log.error("Unexpected error occurred", ex); // Log for debugging
+    public ResponseEntity<ErrorResponseDTO> handleGenericException(Exception ex, HttpServletRequest request) {
+        String path = request.getRequestURI();
+
+        // Allow Swagger static files to be served normally
+        if (path.startsWith("/swagger-ui") || path.startsWith("/webjars") ||
+                path.startsWith("/v3/api-docs") || path.startsWith("/swagger-resources")) {
+            // Let Spring Boot's default error handling take over
+            throw new RuntimeException(ex);
+        }
+
+        log.error("Unexpected error occurred", ex);
 
         ErrorResponseDTO response = ErrorResponseDTO.builder()
                 .timestamp(LocalDateTime.now())

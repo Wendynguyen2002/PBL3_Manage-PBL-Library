@@ -34,6 +34,10 @@ public class PblGroup {
     @OneToMany(mappedBy = "pblGroup")
     private List<Enrollment> enrollments = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "group")
+    private List<TaskSubmission> taskSubmission = new ArrayList<>();
+
     public int getCurrentMemberCount() {
         return enrollments != null ? enrollments.size() : 0;
     }

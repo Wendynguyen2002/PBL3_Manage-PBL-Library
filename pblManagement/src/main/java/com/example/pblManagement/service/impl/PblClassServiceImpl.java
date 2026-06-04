@@ -69,7 +69,6 @@ public class PblClassServiceImpl implements PblClassService {
                 .progressTasks(new ArrayList<>())
                 .enrollments(new ArrayList<>())
                 .finalReportDeadline(dto.getFinalReportDeadline())
-                .isFinalReportLocked(false)
                 .build();
 
         return pblClassMapper.toResponseDTO(pblClassRepository.save(pblClass));

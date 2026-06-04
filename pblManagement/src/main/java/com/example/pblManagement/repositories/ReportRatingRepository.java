@@ -11,5 +11,4 @@ public interface ReportRatingRepository extends JpaRepository<ReportRating, Long
 
     Optional<ReportRating> findByReportIdAndUserId(Long reportId, String userId);
 
-    boolean existsByReportIdAndUserId(Long reportId, String userId);
 }

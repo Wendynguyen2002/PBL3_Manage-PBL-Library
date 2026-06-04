@@ -1,5 +1,6 @@
 package com.example.pblManagement.service.impl;
 
+import com.example.pblManagement.exceptions.FileStorageException;
 import com.example.pblManagement.service.FileStorageService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,48 +26,57 @@ public class LocalFileStorageService implements FileStorageService {
             DateTimeFormatter.ofPattern("yyyy-MM-dd-HHmmss");
 
     @Override
-    public String storeFile(MultipartFile file, String pblClassId, Long groupId) throws IOException {
-        // Generate unique filename: class-{pblClassId}_group-{groupId}_{timestamp}.{ext}
-        String timestamp = LocalDateTime.now().format(DATE_FORMATTER);
-        String originalFileName = file.getOriginalFilename();
-        String extension = "";
+    public String storeFile(MultipartFile file, String pblClassId, Long groupId) {
+        try {
+            String timestamp = LocalDateTime.now().format(DATE_FORMATTER);
+            String originalFileName = file.getOriginalFilename();
+            String extension = "";
 
-        if (originalFileName != null && originalFileName.contains(".")) {
-            extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-        }
+            if (originalFileName != null && originalFileName.contains(".")) {
+                extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            }
 
-        String newFileName = String.format("class-%s_group-%d_%s%s",
-                pblClassId, groupId, timestamp, extension);
+            String newFileName = String.format("class-%s_group-%d_%s%s",
+                    pblClassId, groupId, timestamp, extension);
 
-        // Create directory structure: {uploadDir}/{pblClassId}/
-        Path classDir = Paths.get(uploadDir, pblClassId);
-        if (!Files.exists(classDir)) {
-            Files.createDirectories(classDir);
-        }
+            Path classDir = Paths.get(uploadDir, pblClassId);
+            if (!Files.exists(classDir)) {
+                Files.createDirectories(classDir);
+            }
 
-        Path filePath = classDir.resolve(newFileName);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            Path filePath = classDir.resolve(newFileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Return relative path for database storage
-        return Paths.get(pblClassId, newFileName).toString();
-    }
-
-    @Override
-    public Resource loadFile(String filePath) throws Exception {
-        Path fullPath = Paths.get(uploadDir).resolve(filePath).normalize();
-        Resource resource = new UrlResource(fullPath.toUri());
-
-        if (resource.exists() && resource.isReadable()) {
-            return resource;
-        } else {
-            throw new Exception("File not found: " + filePath);
+            return Paths.get(pblClassId, newFileName).toString();
+        } catch (IOException e) {
+            throw new FileStorageException("Failed to store file for class " + pblClassId + " group " + groupId, e);
         }
     }
 
     @Override
-    public void deleteFile(String filePath) throws IOException {
-        Path fullPath = Paths.get(uploadDir).resolve(filePath).normalize();
-        Files.deleteIfExists(fullPath);
+    public Resource loadFile(String filePath) {
+        try {
+            Path fullPath = Paths.get(uploadDir).resolve(filePath).normalize();
+            Resource resource = new UrlResource(fullPath.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                return resource;
+            } else {
+                throw new FileStorageException("File not found: " + filePath);
+            }
+        } catch (MalformedURLException e) {
+            throw new FileStorageException("Invalid file path: " + filePath, e);
+        }
+    }
+
+    @Override
+    public void deleteFile(String filePath) {
+        try {
+            Path fullPath = Paths.get(uploadDir).resolve(filePath).normalize();
+            Files.deleteIfExists(fullPath);
+        } catch (IOException e) {
+            throw new FileStorageException("Failed to delete file: " + filePath, e);
+        }
     }
 
     @Override

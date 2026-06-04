@@ -19,7 +19,7 @@ public class Project {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT") // nullable
     private String description;
 
     // Many projects to select from in one PBL class
@@ -28,7 +28,7 @@ public class Project {
     private PblClass pblClass;
 
     // 1 project can only be chosen by 1 group
-    @OneToOne(mappedBy = "project")
+    @OneToOne(mappedBy = "project") // nullable
     private PblGroup assignedGroup;
 
     @Enumerated(EnumType.STRING)

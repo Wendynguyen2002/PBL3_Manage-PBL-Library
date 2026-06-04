@@ -14,7 +14,7 @@ import com.example.pblManagement.repositories.ProgressTaskRepository;
 import com.example.pblManagement.service.NotificationService;
 import com.example.pblManagement.service.ProgressTaskService;
 import com.example.pblManagement.utils.PblClassAccessValidator;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.pblManagement.utils.TaskInClassValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,7 @@ public class ProgressTaskServiceImpl implements ProgressTaskService {
     private final PblClassRepository pblClassRepository;
     private final NotificationService notificationService;
     private final PblClassAccessValidator pblClassAccessValidator;
+    private final TaskInClassValidator taskInClassValidator;
 
     // Lecturer: Create a new task
     @Transactional
@@ -75,7 +76,7 @@ public class ProgressTaskServiceImpl implements ProgressTaskService {
 
         pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
-        ProgressTask task = validateTask(taskId, pblClassId);
+        ProgressTask task = taskInClassValidator.validateTaskAndReturnEntity(taskId, pblClassId);
 
         // Store old title for notification
         String oldTitle = task.getTitle();
@@ -114,7 +115,7 @@ public class ProgressTaskServiceImpl implements ProgressTaskService {
 
         pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
-        ProgressTask task = validateTask(taskId, pblClassId);
+        ProgressTask task = taskInClassValidator.validateTaskAndReturnEntity(taskId, pblClassId);
 
         progressTaskRepository.delete(task);
     }
@@ -137,20 +138,9 @@ public class ProgressTaskServiceImpl implements ProgressTaskService {
     public ProgressTaskResponseDTO getTaskById(Long taskId, String pblClassId, Account account) {
         pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
-        ProgressTask task = validateTask(taskId, pblClassId);
+        ProgressTask task = taskInClassValidator.validateTaskAndReturnEntity(taskId, pblClassId);
 
         return progressTaskMapper.toResponseDTO(task);
     }
 
-    // Helper: Validate task
-    public ProgressTask validateTask(Long taskId, String pblClassId) {
-        ProgressTask task = progressTaskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityNotFoundException("Task not found: " + taskId));
-
-        if (!task.getPblClass().getId().equals(pblClassId)) {
-            throw new IllegalStateException("Task does not belong to this class");
-        }
-
-        return task;
-    }
 }

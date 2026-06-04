@@ -1,5 +1,6 @@
 package com.example.pblManagement.controllers;
 
+import com.example.pblManagement.model.dto.finalreport.FileDownloadDTO;
 import com.example.pblManagement.model.dto.finalreport.FinalReportRequestDTO;
 import com.example.pblManagement.model.dto.finalreport.FinalReportResponseDTO;
 import com.example.pblManagement.model.dto.finalreport.FinalReportSummaryDTO;
@@ -32,7 +33,7 @@ public class FinalReportController {
             @PathVariable String pblClassId,
             @Valid @RequestPart("report") FinalReportRequestDTO dto,
             @RequestPart("file") MultipartFile file,
-            @CurrentUser Account account) throws Exception {
+            @CurrentUser Account account) {
 
         FinalReportResponseDTO report = finalReportService.createOrUpdateReport(pblClassId, dto, file, account);
         return ResponseEntity.status(HttpStatus.CREATED).body(report);
@@ -60,7 +61,8 @@ public class FinalReportController {
         return ResponseEntity.ok(reports);
     }
 
-    // Lecturer/Student: Get specific report by ID (with permission check)
+    // Lecturer Get specific report by ID
+    @PreAuthorize("hasRole('LECTURER')")
     @GetMapping("/{reportId}")
     public ResponseEntity<FinalReportResponseDTO> getReportById(
             @PathVariable String pblClassId,
@@ -71,34 +73,19 @@ public class FinalReportController {
         return ResponseEntity.ok(report);
     }
 
-    // Download report file
+    // All roles: Download report file
     @GetMapping("/{reportId}/download")
     public ResponseEntity<Resource> downloadReport(
             @PathVariable String pblClassId,
             @PathVariable Long reportId,
-            @CurrentUser Account account) throws Exception {
+            @CurrentUser Account account) {
 
-        Resource resource = finalReportService.downloadReport(reportId, pblClassId, account);
-
-        // Get original filename from the report (we need to fetch it first)
-        FinalReportResponseDTO report = finalReportService.getReportById(reportId, pblClassId, account);
+        FileDownloadDTO download = finalReportService.downloadReport(reportId, pblClassId, account);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + report.getOriginalFileName() + "\"")
-                .body(resource);
-    }
-
-    // Lecturer/Admin: Delete report
-    @DeleteMapping("/{reportId}")
-    @PreAuthorize("hasAnyRole('LECTURER', 'ADMIN')")
-    public ResponseEntity<Void> deleteReport(
-            @PathVariable String pblClassId,
-            @PathVariable Long reportId,
-            @CurrentUser Account account) throws Exception {
-
-        finalReportService.deleteReport(reportId, pblClassId, account);
-        return ResponseEntity.noContent().build();
+                        "attachment; filename=\"" + download.getOriginalFileName() + "\"")
+                .body(download.getResource());
     }
 
     // Admin: Delete report with criteria check
@@ -106,7 +93,7 @@ public class FinalReportController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> adminDeleteReport(
             @PathVariable Long reportId,
-            @CurrentUser Account account) throws Exception {
+            @CurrentUser Account account) {
         finalReportService.adminDeleteReport(reportId, account);
         return ResponseEntity.noContent().build();
     }

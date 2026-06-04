@@ -1,5 +1,6 @@
 package com.example.pblManagement.service.impl;
 
+import com.example.pblManagement.model.dto.finalreport.FileDownloadDTO;
 import com.example.pblManagement.model.dto.finalreport.LibraryReportResponseDTO;
 import com.example.pblManagement.model.dto.finalreport.LibrarySearchRequestDTO;
 import com.example.pblManagement.model.entities.Account;
@@ -7,7 +8,6 @@ import com.example.pblManagement.model.entities.FinalReport;
 import com.example.pblManagement.model.entities.ReportRating;
 import com.example.pblManagement.model.entities.enums.UserRole;
 import com.example.pblManagement.repositories.FinalReportRepository;
-import com.example.pblManagement.repositories.PblClassRepository;
 import com.example.pblManagement.repositories.ReportRatingRepository;
 import com.example.pblManagement.service.FileStorageService;
 import com.example.pblManagement.service.LibraryService;
@@ -18,16 +18,15 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class LibraryServiceImpl implements LibraryService {
     private final FinalReportRepository finalReportRepository;
     private final ReportRatingRepository reportRatingRepository;
-    private final PblClassRepository pblClassRepository;
     private final FileStorageService fileStorageService;
 
     // Helper: Convert entity to public DTO (anonymous)
@@ -54,13 +53,15 @@ public class LibraryServiceImpl implements LibraryService {
                 .build();
     }
 
+    // All roles: Search for a report
     @Override
+    @Transactional
     public Page<LibraryReportResponseDTO> searchReports(LibrarySearchRequestDTO searchRequest) {
         // Build sort order
         Sort sort = switch (searchRequest.getSortBy()) {
             case "highest_rated" -> Sort.by(Sort.Direction.DESC, "averageRating");
             case "most_downloaded" -> Sort.by(Sort.Direction.DESC, "downloadCount");
-            default -> Sort.by(Sort.Direction.DESC, "submittedAt"); // newest first
+            default -> Sort.by(Sort.Direction.DESC, "submittedAt");
         };
 
         PageRequest pageable = PageRequest.of(searchRequest.getPage(), searchRequest.getSize(), sort);
@@ -77,7 +78,9 @@ public class LibraryServiceImpl implements LibraryService {
         return reports.map(this::toLibraryDTO);
     }
 
+    // All roles: See details of a public report
     @Override
+    @Transactional(readOnly = true)
     public LibraryReportResponseDTO getReportDetails(Long reportId) {
         FinalReport report = finalReportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Report not found"));
@@ -89,8 +92,10 @@ public class LibraryServiceImpl implements LibraryService {
         return toLibraryDTO(report);
     }
 
+    // All roles: Download public reports from the library
     @Override
-    public Resource downloadReport(Long reportId) throws Exception {
+    @Transactional
+    public FileDownloadDTO downloadReport(Long reportId) {
         FinalReport report = finalReportRepository.findById(reportId)
                 .orElseThrow(() -> new EntityNotFoundException("Report not found"));
 
@@ -98,14 +103,25 @@ public class LibraryServiceImpl implements LibraryService {
             throw new EntityNotFoundException("Report not found");
         }
 
-        // Increment download count
+        // Load file FIRST to verify it exists and is readable
+        Resource fileResource = fileStorageService.loadFile(report.getFilePath());
+
+        // Only increment download count if file loads successfully
         report.setDownloadCount((report.getDownloadCount() != null ? report.getDownloadCount() : 0) + 1);
         finalReportRepository.save(report);
 
-        return fileStorageService.loadFile(report.getFilePath());
+        // Return both
+        return FileDownloadDTO.builder()
+                .resource(fileResource)
+                .originalFileName(report.getOriginalFileName())
+                .fileType(report.getFileType())
+                .title(report.getTitle())
+                .build();
     }
 
+    // All roles: Rate someone's final report
     @Override
+    @Transactional
     public void rateReport(Long reportId, Integer rating, Account account) {
         if (rating < 1 || rating > 5) {
             throw new ValidationException("Rating must be between 1 and 5");
@@ -124,13 +140,8 @@ public class LibraryServiceImpl implements LibraryService {
                 .orElse(null);
 
         if (existingRating != null) {
-            // Update existing rating
-            int oldRating = existingRating.getRating();
             existingRating.setRating(rating);
             reportRatingRepository.save(existingRating);
-
-            // Update report's average rating
-            report.updateAverageRating(rating, oldRating);
         } else {
             // Create new rating
             ReportRating newRating = ReportRating.builder()
@@ -139,15 +150,15 @@ public class LibraryServiceImpl implements LibraryService {
                     .rating(rating)
                     .build();
             reportRatingRepository.save(newRating);
-
-            // Update report's average rating
-            report.updateAverageRating(rating, 0);
         }
 
+        report.recalculateAverageRating();
         finalReportRepository.save(report);
     }
 
+    // All roles: Get ratings of one report
     @Override
+    @Transactional(readOnly = true)
     public Integer getUserRating(Long reportId, Account account) {
         if (account == null) return null;
 
@@ -156,7 +167,9 @@ public class LibraryServiceImpl implements LibraryService {
                 .orElse(null);
     }
 
+    // Student: Toggle public status of their group's report
     @Override
+    @Transactional
     public void togglePublicStatus(Long reportId, String pblClassId, Account account) {
         // Only students can toggle their own report's public status
         if (account.getRole() != UserRole.STUDENT) {
@@ -171,7 +184,7 @@ public class LibraryServiceImpl implements LibraryService {
                 .anyMatch(e -> e.getStudent().getId().equals(account.getId()));
 
         if (!isOwner) {
-            throw new IllegalStateException("You can only change public status for your own group's report");
+            throw new AccessDeniedException("You can only change public status for your own group's report");
         }
 
         report.setPublic(!report.isPublic());

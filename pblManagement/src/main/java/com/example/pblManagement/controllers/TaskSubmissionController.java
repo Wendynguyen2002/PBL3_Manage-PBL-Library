@@ -46,7 +46,7 @@ public class TaskSubmissionController {
 
     // Lecturer: Get all submissions for a task (one per group)
     @GetMapping
-    @PreAuthorize("hasAnyRole('LECTURER', 'ADMIN')")
+    @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<List<TaskSubmissionSummaryDTO>> getAllSubmissionsForTask(
             @PathVariable String pblClassId,
             @PathVariable Long taskId,
@@ -57,7 +57,7 @@ public class TaskSubmissionController {
 
     // Lecturer: Get a specific group's submission details
     @GetMapping("/groups/{groupId}")
-    @PreAuthorize("hasAnyRole('LECTURER', 'ADMIN')")
+    @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<TaskSubmissionResponseDTO> getSubmissionByGroup(
             @PathVariable String pblClassId,
             @PathVariable Long taskId,

@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 // Details of a progress task - visible to anyone
+// On frontend, there will be a button to submit this task below this information
 public class ProgressTaskResponseDTO {
     private Long id;
 

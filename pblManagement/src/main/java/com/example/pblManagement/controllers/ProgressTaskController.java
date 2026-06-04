@@ -30,6 +30,9 @@ public class ProgressTaskController {
     }
 
     // All roles: Get single task details
+    // If the current role is student, below this there will be a button to submit this task
+    // If the current role is lecturer, below this there will be a list all groups' submissions
+    // If the current role is admin, show nothing but this task's details.
     @GetMapping("/{taskId}")
     public ResponseEntity<ProgressTaskResponseDTO> getTaskById(
             @PathVariable String pblClassId,

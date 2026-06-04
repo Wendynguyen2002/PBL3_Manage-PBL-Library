@@ -10,6 +10,8 @@ import com.example.pblManagement.model.entities.enums.TaskSubmissionStatus;
 import com.example.pblManagement.model.entities.enums.UserRole;
 import com.example.pblManagement.repositories.*;
 import com.example.pblManagement.service.TaskSubmissionService;
+import com.example.pblManagement.utils.PblClassAccessValidator;
+import com.example.pblManagement.utils.TaskInClassValidator;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,48 +26,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskSubmissionServiceImpl implements TaskSubmissionService {
     private final TaskSubmissionRepository taskSubmissionRepository;
-    private final ProgressTaskRepository progressTaskRepository;
     private final TaskSubmissionMapper taskSubmissionMapper;
-    private final PblClassRepository pblClassRepository;
     private final PblGroupRepository pblGroupRepository;
     private final StudentRepository studentRepository;
     private final SubmissionLinkRepository submissionLinkRepository;
     private final SubmissionLinkMapper submissionLinkMapper;
+    private final PblClassAccessValidator pblClassAccessValidator;
+    private final TaskInClassValidator taskInClassValidator;
 
-    // Helper: Validate student is in a group for this class
-    private PblGroup getStudentGroupInClass(String studentId, String pblClassId) {
-        return pblGroupRepository.findStudentGroupInClass(studentId, pblClassId)
-                .orElseThrow(() -> new AccessDeniedException("You must be in a group to submit tasks"));
-    }
-
-    // Helper: Validate task belongs to class and return it
-    private ProgressTask validateTaskInClass(Long taskId, String pblClassId) {
-        ProgressTask task = progressTaskRepository.findById(taskId)
-                .orElseThrow(() -> new EntityNotFoundException("Task not found: " + taskId));
-
-        if (!task.getPblClass().getId().equals(pblClassId)) {
-            throw new IllegalStateException("Task does not belong to this class");
-        }
-
-        return task;
-    }
-
-    // Helper: Validate lecturer access to class
-    private void validateLecturerAccess(String pblClassId, Account account) {
-        if (account.getRole() != UserRole.LECTURER && account.getRole() != UserRole.ADMIN) {
-            throw new AccessDeniedException("Only lecturers can view all submissions");
-        }
-
-        PblClass pblClass = pblClassRepository.findById(pblClassId)
-                .orElseThrow(() -> new EntityNotFoundException("PBL class not found: " + pblClassId));
-
-        if (account.getRole() == UserRole.LECTURER) {
-            if (pblClass.getLecturer() == null || !pblClass.getLecturer().getId().equals(account.getId())) {
-                throw new AccessDeniedException("You don't have access to this class");
-            }
-        }
-    }
-
+    // Student: Submit or resubmit
     @Transactional
     @Override
     public TaskSubmissionResponseDTO submitOrUpdateSubmission(Long taskId, String pblClassId,
@@ -75,16 +44,14 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
             throw new AccessDeniedException("Only students can submit tasks");
         }
 
-        // Verify student is enrolled in class
-        if (!pblClassRepository.isStudentEnrolledInClass(pblClassId, account.getId())) {
-            throw new AccessDeniedException("You are not enrolled in this class");
-        }
+        pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
         // Get student's group (must be in a group)
-        PblGroup group = getStudentGroupInClass(account.getId(), pblClassId);
+        PblGroup group = pblGroupRepository.findStudentGroupInClass(account.getId(), pblClassId)
+                .orElseThrow(() -> new AccessDeniedException("You must be in a group to submit tasks"));
 
         // Validate task exists and belongs to class
-        ProgressTask task = validateTaskInClass(taskId, pblClassId);
+        ProgressTask task = taskInClassValidator.validateTaskAndReturnEntity(taskId, pblClassId);
 
         // Get student entity
         Student student = studentRepository.findById(account.getId())
@@ -113,17 +80,14 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
             // Save submission first to get ID for links
             submission = taskSubmissionRepository.save(submission);
         } else {
-            // Update existing submission
-            submission.setBriefDescription(dto.getBriefDescription());
-            submission.setLastModifiedBy(student);
-            submission.setLastModifiedAt(LocalDateTime.now());
-
-            // Recalculate isLate (in case due date changed after submission)
+            // Update existing submission (resubmit)
             LocalDateTime now = LocalDateTime.now();
-            if (submission.getSubmittedAt() == null) {
-                submission.setSubmittedAt(now);
-            }
-            submission.setIsLate(now.isAfter(task.getDueDate()));
+
+            submission.setBriefDescription(dto.getBriefDescription());
+            submission.setSubmittedAt(now);  // UPDATE the submission time
+            submission.setIsLate(now.isAfter(task.getDueDate()));  // recalculate based on new time
+            submission.setLastModifiedBy(student);
+            submission.setLastModifiedAt(now);
 
             // Delete old links and replace with new ones
             if (submission.getLinks() != null) {
@@ -150,6 +114,7 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
         return taskSubmissionMapper.toResponseDTO(savedSubmission);
     }
 
+    // Students: Get their group's submission
     @Transactional(readOnly = true)
     @Override
     public TaskSubmissionResponseDTO getMyGroupSubmission(Long taskId, String pblClassId, Account account) {
@@ -158,33 +123,35 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
             throw new AccessDeniedException("Only students can view their own submissions");
         }
 
-        // Verify student is enrolled
-        if (!pblClassRepository.isStudentEnrolledInClass(pblClassId, account.getId())) {
-            throw new AccessDeniedException("You are not enrolled in this class");
-        }
+        pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
         // Get student's group
-        PblGroup group = getStudentGroupInClass(account.getId(), pblClassId);
+        PblGroup group = pblGroupRepository.findStudentGroupInClass(account.getId(), pblClassId)
+                .orElseThrow(() -> new AccessDeniedException("You must be in a group to submit tasks"));
 
         // Validate task
-        validateTaskInClass(taskId, pblClassId);
+        taskInClassValidator.validateTask(taskId, pblClassId);
 
-        // Find submission
-        TaskSubmission submission = taskSubmissionRepository
+        // Find and return submission
+        return taskSubmissionRepository
                 .findByTaskIdAndGroupId(taskId, group.getId())
-                .orElseThrow(() -> new EntityNotFoundException("No submission found for your group"));
-
-        return taskSubmissionMapper.toResponseDTO(submission);
+                .map(taskSubmissionMapper::toResponseDTO)
+                .orElse(null);
     }
 
+    // Lecturer: See all groups' submission for a task
     @Transactional(readOnly = true)
     @Override
     public List<TaskSubmissionSummaryDTO> getAllSubmissionsForTask(Long taskId, String pblClassId, Account account) {
         // Only lecturers can view all submissions
-        validateLecturerAccess(pblClassId, account);
+        if  (account.getRole() != UserRole.LECTURER) {
+            throw new AccessDeniedException("Only lecturers can view all submissions");
+        }
+
+        pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
 
         // Validate task belongs to class
-        validateTaskInClass(taskId, pblClassId);
+        taskInClassValidator.validateTask(taskId, pblClassId);
 
         // Get all groups in this class
         List<PblGroup> groups = pblGroupRepository.findByPblClassIdOrderByGroupName(pblClassId);
@@ -214,24 +181,26 @@ public class TaskSubmissionServiceImpl implements TaskSubmissionService {
                 .collect(Collectors.toList());
     }
 
+    // Lecturer: Get a specific group's submission details
     @Transactional(readOnly = true)
     @Override
     public TaskSubmissionResponseDTO getSubmissionByGroup(Long taskId, String pblClassId, Long groupId, Account account) {
-        // Only lecturers can view any group's submission
-        validateLecturerAccess(pblClassId, account);
+        if (account.getRole() != UserRole.LECTURER) {
+            throw new AccessDeniedException("Only lecturers can view group submissions");
+        }
 
-        // Validate task belongs to class
-        validateTaskInClass(taskId, pblClassId);
+        pblClassAccessValidator.findClassAndValidateAccess(pblClassId, account);
+
+        taskInClassValidator.validateTask(taskId, pblClassId);
 
         // Verify group exists in this class
         pblGroupRepository.findByIdAndPblClassId(groupId, pblClassId)
                 .orElseThrow(() -> new EntityNotFoundException("Group not found in this class"));
 
         // Find submission
-        TaskSubmission submission = taskSubmissionRepository
+        return taskSubmissionRepository
                 .findByTaskIdAndGroupId(taskId, groupId)
-                .orElseThrow(() -> new EntityNotFoundException("No submission found for this group"));
-
-        return taskSubmissionMapper.toResponseDTO(submission);
+                .map(taskSubmissionMapper::toResponseDTO)
+                .orElse(null);
     }
 }

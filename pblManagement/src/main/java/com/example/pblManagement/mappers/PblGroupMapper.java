@@ -16,7 +16,7 @@ import java.util.List;
 public interface PblGroupMapper {
     @Mapping(target = "projectTitle", source = "project", qualifiedByName = "mapProjectToTitle")
     @Mapping(target = "members", source = "enrollments", qualifiedByName = "mapEnrollmentsToStudentSummaries")
-    @Mapping(target = "currentMemberCount", expression = "java(group.getEnrollments() != null ? group.getEnrollments().size() : 0)")
+    @Mapping(target = "currentMemberCount", expression = "java(group.getEnrollments().size())")
     @Mapping(target = "isFull", expression = "java(PblGroupMapper.isGroupFull(group))")
     PblGroupSummaryDTO toSummaryDTO(PblGroup group);
 

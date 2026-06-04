@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// Only lecturer can see this
 public class TaskSubmissionSummaryDTO {
     private Long groupId;
 

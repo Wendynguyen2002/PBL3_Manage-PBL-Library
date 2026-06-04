@@ -1,9 +1,9 @@
 package com.example.pblManagement.service;
 
+import com.example.pblManagement.model.dto.finalreport.FileDownloadDTO;
 import com.example.pblManagement.model.dto.finalreport.LibraryReportResponseDTO;
 import com.example.pblManagement.model.dto.finalreport.LibrarySearchRequestDTO;
 import com.example.pblManagement.model.entities.Account;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 
 public interface LibraryService {
@@ -11,7 +11,7 @@ public interface LibraryService {
 
     LibraryReportResponseDTO getReportDetails(Long reportId);
 
-    Resource downloadReport(Long reportId) throws Exception;
+    FileDownloadDTO downloadReport(Long reportId);
 
     void rateReport(Long reportId, Integer rating, Account account);
 

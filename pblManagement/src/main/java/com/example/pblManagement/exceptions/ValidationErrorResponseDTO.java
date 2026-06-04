@@ -12,7 +12,10 @@ import java.util.Map;
 @Builder
 public class ValidationErrorResponseDTO {
     private LocalDateTime timestamp;
+
     private Integer status;
+
     private String message;
+
     private Map<String, String> errors;
 }

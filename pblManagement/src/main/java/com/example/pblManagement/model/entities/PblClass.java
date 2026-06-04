@@ -61,10 +61,11 @@ public class PblClass {
     )
     private List<Major> majors = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "pblClass", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FinalReport> finalReports = new ArrayList<>();
+
     @Column(nullable = false)
     private LocalDateTime finalReportDeadline;  // When final reports are due
 
-    @Builder.Default
-    @Column(nullable = false)
-    private boolean isFinalReportLocked = false;  // Automatically becomes true after deadline
 }

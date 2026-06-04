@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "final_reports",
@@ -13,13 +15,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class FinalReport {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String title;  // Optional for students, but good for library
+    private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description;  // Optional, what the report is about
@@ -37,6 +38,10 @@ public class FinalReport {
     private LocalDateTime submittedAt;
 
     private LocalDateTime lastModifiedAt;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReportRating> ratings = new ArrayList<>();
 
     // Which group submitted this report
     @ManyToOne
@@ -68,25 +73,29 @@ public class FinalReport {
         lastModifiedAt = LocalDateTime.now();
     }
 
+    @Builder.Default
     @Column(nullable = false)
     private boolean isPublic = false;
 
     private Double averageRating;
 
+    @Builder.Default
     private Integer ratingCount = 0;
 
+    @Builder.Default
     private Integer downloadCount = 0;
 
-    // Helper methods
-    public void updateAverageRating(int newRating, int oldRating) {
-        if (ratingCount == null) ratingCount = 0;
-        double total = (averageRating != null ? averageRating * ratingCount : 0);
-        if (oldRating > 0) {
-            total -= oldRating;
-            ratingCount--;
+    public void recalculateAverageRating() {
+        if (ratings == null || ratings.isEmpty()) {
+            this.averageRating = null;
+            this.ratingCount = 0;
+            return;
         }
-        total += newRating;
-        ratingCount++;
-        averageRating = ratingCount > 0 ? total / ratingCount : null;
+
+        this.ratingCount = ratings.size();
+        this.averageRating = ratings.stream()
+                .mapToInt(ReportRating::getRating)
+                .average()
+                .orElse(0.0);
     }
 }

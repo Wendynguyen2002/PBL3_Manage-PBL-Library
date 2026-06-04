@@ -1,5 +1,6 @@
 package com.example.pblManagement.controllers;
 
+import com.example.pblManagement.model.dto.finalreport.FileDownloadDTO;
 import com.example.pblManagement.model.dto.finalreport.LibraryReportResponseDTO;
 import com.example.pblManagement.model.dto.finalreport.LibrarySearchRequestDTO;
 import com.example.pblManagement.model.entities.Account;
@@ -10,6 +11,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class LibraryController {
     private final LibraryService libraryService;
 
-    // Public: Search library (no login required)
+    // All roles: Search the library
     @PostMapping("/search")
     public ResponseEntity<Page<LibraryReportResponseDTO>> searchReports(
             @RequestBody LibrarySearchRequestDTO searchRequest) {
@@ -26,7 +28,7 @@ public class LibraryController {
         return ResponseEntity.ok(reports);
     }
 
-    // Public: Get report details (no login required)
+    // All roles: Get report details
     @GetMapping("/reports/{reportId}")
     public ResponseEntity<LibraryReportResponseDTO> getReportDetails(
             @PathVariable Long reportId) {
@@ -34,21 +36,22 @@ public class LibraryController {
         return ResponseEntity.ok(report);
     }
 
-    // Public: Download report (no login required)
+    // All roles: Download report file
     @GetMapping("/reports/{reportId}/download")
-    public ResponseEntity<Resource> downloadReport(
-            @PathVariable Long reportId) throws Exception {
-        Resource resource = libraryService.downloadReport(reportId);
-        LibraryReportResponseDTO report = libraryService.getReportDetails(reportId);
+    public ResponseEntity<Resource> downloadReport(@PathVariable Long reportId) {
+        FileDownloadDTO download = libraryService.downloadReport(reportId);
+
+        // Build filename: title + extension
+        String extension = download.getFileType().toLowerCase();
+        String filename = download.getTitle().replaceAll("\\s+", "_") + "." + extension;
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + report.getTitle() + "." +
-                                report.getFileType().toLowerCase() + "\"")
-                .body(resource);
+                        "attachment; filename=\"" + filename + "\"")
+                .body(download.getResource());
     }
 
-    // Authenticated: Rate a report
+    // All roles: Rate a report
     @PostMapping("/reports/{reportId}/rate")
     public ResponseEntity<Void> rateReport(
             @PathVariable Long reportId,
@@ -58,7 +61,7 @@ public class LibraryController {
         return ResponseEntity.ok().build();
     }
 
-    // Authenticated: Get user's rating for a report
+    // All roles: See ratings of a report in the library
     @GetMapping("/reports/{reportId}/my-rating")
     public ResponseEntity<Integer> getUserRating(
             @PathVariable Long reportId,
@@ -68,6 +71,7 @@ public class LibraryController {
     }
 
     // Student: Toggle public status of their own report
+    @PreAuthorize("hasRole('STUDENT')")
     @PutMapping("/pbl-classes/{pblClassId}/reports/{reportId}/public-toggle")
     public ResponseEntity<Void> togglePublicStatus(
             @PathVariable String pblClassId,
