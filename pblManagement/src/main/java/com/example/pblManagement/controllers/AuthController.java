@@ -2,6 +2,7 @@ package com.example.pblManagement.controllers;
 
 import com.example.pblManagement.model.dto.common.LoginRequestDTO;
 import com.example.pblManagement.model.dto.common.LoginResponseDTO;
+import com.example.pblManagement.utils.JwtUtils;
 import com.example.pblManagement.utils.SecurityUtils;
 import com.example.pblManagement.utils.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,7 +25,9 @@ import java.util.Map;
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final SecurityUtils securityUtils;
+    private final JwtUtils jwtUtils;
 
+    // Replace the login method in your existing AuthController
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
         // Authenticate using email and password
@@ -38,13 +41,16 @@ public class AuthController {
         // Set authentication in security context
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        // Generate JWT token
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
         // Get user details
         UserDetailsImpl userDetails = securityUtils.getCurrentUserDetails();
         String userId = userDetails.getId();
         String role = userDetails.getRole().name();
         String email = userDetails.getEmail();
 
-        return ResponseEntity.ok(new LoginResponseDTO(userId, email, role, "Login successful"));
+        return ResponseEntity.ok(new LoginResponseDTO(userId, email, role, jwt, "Login successful"));
     }
 
     @PostMapping("/logout")
