@@ -88,12 +88,12 @@ export default function AccountManagement() {
     }
 
     const generateStudentCredentials = (id) => ({
-        email: `${id}@sv.dut.udn.vn`,
+        email: `${id}sv@dut.udn.vn`,
         password: `Dut@${id}`
     })
 
     const generateLecturerCredentials = (id) => ({
-        email: `${id}@gv.dut.udn.vn`,
+        email: `${id}gv@dut.udn.vn`,
         password: `Udn@${id}`
     })
 

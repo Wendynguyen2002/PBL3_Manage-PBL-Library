@@ -3,6 +3,7 @@ package com.example.pblManagement.service;
 import com.example.pblManagement.model.dto.pbl.PblClassRequestDTO;
 import com.example.pblManagement.model.dto.pbl.PblClassResponseDTO;
 import com.example.pblManagement.model.dto.pbl.PblClassSummaryDTO;
+import com.example.pblManagement.model.dto.pbl.PblClassUpdateRequestDTO;
 import com.example.pblManagement.model.dto.user.StudentResponseDTO;
 import com.example.pblManagement.model.dto.user.StudentSummaryDTO;
 import com.example.pblManagement.model.entities.Account;
@@ -30,7 +31,7 @@ public interface PblClassService {
     void removeStudentFromClass(String pblClassId, String studentId, Account account);
 
     // Update PBL class
-    PblClassResponseDTO updatePblClass(String pblClassId, PblClassRequestDTO dto, Account account);
+    PblClassResponseDTO updatePblClass(String pblClassId, PblClassUpdateRequestDTO dto, Account account);
 
     // Delete PBL class
     void deletePblClass(String PblClassId, Account account);

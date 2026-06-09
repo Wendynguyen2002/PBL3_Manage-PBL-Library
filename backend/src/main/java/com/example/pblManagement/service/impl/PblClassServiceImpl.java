@@ -5,6 +5,7 @@ import com.example.pblManagement.mappers.StudentMapper;
 import com.example.pblManagement.model.dto.pbl.PblClassRequestDTO;
 import com.example.pblManagement.model.dto.pbl.PblClassResponseDTO;
 import com.example.pblManagement.model.dto.pbl.PblClassSummaryDTO;
+import com.example.pblManagement.model.dto.pbl.PblClassUpdateRequestDTO;
 import com.example.pblManagement.model.dto.user.StudentResponseDTO;
 import com.example.pblManagement.model.dto.user.StudentSummaryDTO;
 import com.example.pblManagement.model.entities.*;
@@ -245,41 +246,35 @@ public class PblClassServiceImpl implements PblClassService {
     // Lecturer: Update their own PBL class
     @Transactional
     @Override
-    public PblClassResponseDTO updatePblClass(String pblClassId, PblClassRequestDTO dto, Account account) {
+    public PblClassResponseDTO updatePblClass(String pblClassId, PblClassUpdateRequestDTO dto, Account account) {
         PblClass existingClass = pblClassAccessValidator.findClassAndValidateAccessAndReturnEntity(pblClassId, account);
-
-        // Prevent changing majors after creation
-        if (dto.getMajorId() != null && !dto.getMajorId().isEmpty()) {
-            List<String> existingMajorIds = existingClass.getMajors().stream()
-                    .map(Major::getId)
-                    .toList();
-            List<String> newMajorIds = dto.getMajorId();
-
-            if (!existingMajorIds.equals(newMajorIds)) {
-                throw new IllegalStateException("Cannot change class majors after creation. Delete and recreate the class if needed.");
-            }
-        }
 
         // Validate group size change if present
         if (dto.getMaxStudentsPerGroup() != null) {
-            validateGroupSizeChanges(existingClass, dto);
+            // Only validate if the max group size is being reduced
+            if (dto.getMaxStudentsPerGroup() < existingClass.getMaxStudentsPerGroup()) {
+                validateGroupSizeChanges(existingClass, dto);
+            }
+            existingClass.setMaxStudentsPerGroup(dto.getMaxStudentsPerGroup());
         }
 
-        // Manual update for allowed fields only
-        if (dto.getClassName() != null) {
+        // Update other fields
+        if (dto.getClassName() != null && !dto.getClassName().isBlank()) {
             existingClass.setClassName(dto.getClassName());
         }
-        if (dto.getSemester() != null) {
+
+        if (dto.getSemester() != null && !dto.getSemester().isBlank()) {
             existingClass.setSemester(dto.getSemester());
         }
-        if (dto.getMaxStudentsPerGroup() != null) {
-            existingClass.setMaxStudentsPerGroup(dto.getMaxStudentsPerGroup());
+
+        if (dto.getFinalReportDeadline() != null) {
+            existingClass.setFinalReportDeadline(dto.getFinalReportDeadline());
         }
 
         return pblClassMapper.toResponseDTO(pblClassRepository.save(existingClass));
     }
 
-    // Lecturer: Delete their own PBL class / Admin: Able to delete any class
+    // Lecturer: Delete their own PBL class
     @Transactional
     @Override
     public void deletePblClass(String pblClassId, Account account) {
@@ -288,7 +283,7 @@ public class PblClassServiceImpl implements PblClassService {
     }
 
     // Helper method to validate group size changes
-    private void validateGroupSizeChanges(PblClass existingClass, PblClassRequestDTO requestDTO) {
+    private void validateGroupSizeChanges(PblClass existingClass, PblClassUpdateRequestDTO requestDTO) {
         // Use repository query to check if any group exceeds new limit
         if (requestDTO.getMaxStudentsPerGroup() != null) {
             // Fetch only group IDs and their member counts efficiently

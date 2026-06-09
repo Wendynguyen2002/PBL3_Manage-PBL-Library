@@ -105,7 +105,6 @@ export default function PblClassPage() {
         className: '',
         semester: '',
         maxStudentsPerGroup: 3,
-        majorId: [],
         finalReportDeadline: ''
     })
     const [updatingClass, setUpdatingClass] = useState(false)
@@ -143,7 +142,6 @@ export default function PblClassPage() {
                 className: data.className,
                 semester: data.semester,
                 maxStudentsPerGroup: data.maxStudentsPerGroup,
-                majorId: [],
                 finalReportDeadline: data.finalReportDeadline ? data.finalReportDeadline.slice(0, 16) : ''
             })
         } catch (err) {
@@ -195,18 +193,6 @@ export default function PblClassPage() {
             setAvailableStudents(data)
         } catch (err) {
             console.error('Failed to load available students:', err)
-        }
-    }
-
-    const fetchMajorsForUpdate = async () => {
-        if (!pblClass?.lecturerName) return
-        try {
-            // Fetch departments first, then majors by department
-            // For now, we'll just show majors without department filter in update modal
-            const response = await majorAPI.getAllMajorsList()
-            setMajorsList(response || [])
-        } catch (err) {
-            console.error('Failed to load majors:', err)
         }
     }
 
@@ -609,7 +595,6 @@ export default function PblClassPage() {
     }
 
     const openUpdateClassModal = async () => {
-        await fetchMajorsForUpdate()
         setShowUpdateClassModal(true)
     }
 

@@ -3,6 +3,7 @@ package com.example.pblManagement.controllers;
 import com.example.pblManagement.model.dto.pbl.PblClassRequestDTO;
 import com.example.pblManagement.model.dto.pbl.PblClassResponseDTO;
 import com.example.pblManagement.model.dto.pbl.PblClassSummaryDTO;
+import com.example.pblManagement.model.dto.pbl.PblClassUpdateRequestDTO;
 import com.example.pblManagement.model.dto.user.StudentResponseDTO;
 import com.example.pblManagement.model.dto.user.StudentSummaryDTO;
 import com.example.pblManagement.model.entities.Account;
@@ -84,7 +85,7 @@ public class PblClassController {
     @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<PblClassResponseDTO> updatePblClass(
             @PathVariable String pblClassId,
-            @Valid @RequestBody PblClassRequestDTO dto,
+            @Valid @RequestBody PblClassUpdateRequestDTO dto,
             @CurrentUser Account account) {
         PblClassResponseDTO updated = pblClassService.updatePblClass(pblClassId, dto, account);
         return ResponseEntity.ok(updated);
@@ -92,7 +93,7 @@ public class PblClassController {
 
     // Lecturer: Delete their own PBL class / Admin: Delete any class
     @DeleteMapping("/{pblClassId}")
-    @PreAuthorize("hasAnyRole('LECTURER', 'ADMIN')")
+    @PreAuthorize("hasRole('LECTURER')")
     public ResponseEntity<Void> deletePblClass(
             @PathVariable String pblClassId,
             @CurrentUser Account account) {
