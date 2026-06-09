@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:16
+    ports:
+      - "5433:5432"
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: abcdefgh!
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pbl-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: abcdefgh!
+      SPRING_PROFILES_ACTIVE: docker
+      FILE_UPLOAD_DIR: /app/uploads/final-reports
+    volumes:
+      - /Users/buianhtu/Desktop/uploads/final-reports:/app/uploads/final-reports
+    restart: always
+    networks:
+      - pbl-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - pbl-network
+
+volumes:
+  postgres_data:
+  uploads_data:
+
+networks:
+  pbl-network:
+    driver: bridge
