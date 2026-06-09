@@ -35,7 +35,7 @@ services:
       SPRING_PROFILES_ACTIVE: docker
       FILE_UPLOAD_DIR: /app/uploads/final-reports
     volumes:
-      - /Users/buianhtu/Desktop/uploads/final-reports:/app/uploads/final-reports
+      - uploads_data:/app/uploads/final-reports
     restart: always
     networks:
       - pbl-network
